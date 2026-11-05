@@ -429,6 +429,7 @@ export function startSpace(canvas: HTMLCanvasElement) {
     let running = true;
     let raf = 0;
     let smoothed = window.scrollY;
+    let lastFrame = performance.now();
     let shownTerraform = 0;
     let lastDraw = -1e9;
     let slow = 0;
@@ -564,7 +565,12 @@ export function startSpace(canvas: HTMLCanvasElement) {
         raf = requestAnimationFrame(tick);
         const target = window.scrollY;
         const moving = Math.abs(target - smoothed) > 0.4;
-        smoothed = still ? target : moving ? smoothed + (target - smoothed) * 0.16 : target;
+        // The sky follows the scroll with some weight of its own, so a fast flick doesn't whip the story past.
+        // Measured in time rather than frames, it feels the same at 60 and 120 Hz.
+        const step = Math.min(now - lastFrame, 50);
+        lastFrame = now;
+        const follow = 1 - Math.exp(-step / 110);
+        smoothed = still ? target : moving ? smoothed + (target - smoothed) * follow : target;
 
         const easing = Math.abs(terraformTarget - shownTerraform) > 0.001;
         shownTerraform = easing ? shownTerraform + (terraformTarget - shownTerraform) * 0.14 : terraformTarget;
