@@ -27,13 +27,16 @@ component TopBar {
     let hero = document.getElementById("inicio")
     let onScroll = () => {
       let bar = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--bar")) || 60
-      docked = (hero?.getBoundingClientRect().bottom ?? 0) <= bar
+      // A jump to the next section can stop a pixel short of the hero's edge.
+      docked = (hero?.getBoundingClientRect().bottom ?? 0) <= bar + 2
     }
 
     let watch = new IntersectionObserver(entries => {
       for entry in entries {
         if entry.isIntersecting {
           current = `#${entry.target.id}`
+        } else if current == `#${entry.target.id}` {
+          current = ""
         }
       }
     }, { rootMargin: "-45% 0px -50% 0px" })

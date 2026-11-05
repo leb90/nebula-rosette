@@ -108,17 +108,16 @@ button.menu-item.on, button.menu-item.on:hover { color: #fff; border-color: var(
 .version { margin-left: auto; background: var(--space); padding: 2px 8px; }
 @media (hover: none) { .hints { display: none; } }
 
-/* The bar that stays. */
-/* Out of sight over the first screen. It drops in a few steps, then its contents come up. */
-.topbar {
-  position: fixed !important; top: 0; left: 0; right: 0; z-index: 20; height: var(--bar); padding: 0 var(--margin); background: var(--space); gap: 24px;
-  transform: translateY(calc(-100% - 20px)); transition: transform 0.2s steps(4, end);
-}
-.topbar.docked, .topbar:focus-within { transform: none; transition: transform 0.32s steps(8, end); }
-.topbar > .wordmark, .topbar-links a, .topbar-end > * { opacity: 0; transform: translateY(-10px); transition: opacity 0.1s, transform 0.1s; }
-.topbar.docked > .wordmark, .topbar.docked .topbar-links a, .topbar.docked .topbar-end > *,
-.topbar:focus-within > .wordmark, .topbar:focus-within .topbar-links a, .topbar:focus-within .topbar-end > * {
-  opacity: 1; transform: none; transition: opacity 0.24s steps(3, end) var(--d, 0.34s), transform 0.24s steps(3, end) var(--d, 0.34s);
+/* The bar. Without scripts it simply sticks once the first screen has gone. With them it stays out of sight over
+   that screen (already a menu, with its own languages), drops in a few steps once it has gone, then its contents
+   come up. It moves with translate so the press of its buttons (transform) still shows. */
+.topbar { position: sticky; top: 0; z-index: 20; height: var(--bar); padding: 0 var(--margin); background: var(--space); gap: 24px; }
+.js .topbar { position: fixed !important; left: 0; right: 0; translate: 0 calc(-100% - 20px); transition: translate 0.2s steps(4, end); }
+.js .topbar.docked, .js .topbar:has(:focus-visible) { translate: none; transition: translate 0.32s steps(8, end); }
+.js .topbar > .wordmark, .js .topbar-links a, .js .topbar-end > * { opacity: 0; translate: 0 -10px; transition: opacity 0.1s, translate 0.1s; }
+.js .topbar.docked > .wordmark, .js .topbar.docked .topbar-links a, .js .topbar.docked .topbar-end > *,
+.js .topbar:has(:focus-visible) > .wordmark, .js .topbar:has(:focus-visible) .topbar-links a, .js .topbar:has(:focus-visible) .topbar-end > * {
+  opacity: 1; translate: none; transition: opacity 0.24s steps(3, end) var(--d, 0.34s), translate 0.24s steps(3, end) var(--d, 0.34s);
 }
 .topbar-links a:nth-child(2) { --d: 0.38s; }
 .topbar-links a:nth-child(3) { --d: 0.42s; }
@@ -149,7 +148,7 @@ button.menu-item.on, button.menu-item.on:hover { color: #fff; border-color: var(
 .topbar-end { gap: 18px; }
 .bar-action { background: var(--amber); color: var(--ink); padding: 7px 14px; text-decoration: none; font-size: var(--t-small); white-space: nowrap; line-height: 1.1; }
 .bar-action:hover { background: var(--paper); }
-.bar-action:active, .topbar.docked .topbar-end > .bar-action:active { transform: translateY(2px); }
+.bar-action:active { transform: translateY(2px); }
 @media (max-width: 1020px) { .topbar-links { display: none; } }
 
 .lang { gap: 2px; }

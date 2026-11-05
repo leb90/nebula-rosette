@@ -35,9 +35,10 @@ const VIEWPORTS = [
 ];
 
 // What runs inside the page. It returns the problems, each with the scroll where it shows.
-const inspect = async ({ barSelector }) => {
+const inspect = async ({ barSelector, pinCss }) => {
     const pin = document.createElement("style");
-    pin.textContent = `${barSelector} { transform: none !important; transition: none !important; }`;
+    pin.id = "layout-pin";
+    pin.textContent = pinCss;
     document.head.append(pin);
     const problems = [];
     const frame = () => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done)));
@@ -82,7 +83,11 @@ const inspect = async ({ barSelector }) => {
             if (Number.isNaN(top) || Math.abs(box.top - top) > 1 || box.bottom <= 0) continue;
             const under = barShows && texts.find((t) => el.contains(t) && !hidden(t) && t.getBoundingClientRect().top < covered - 0.5 && t.getBoundingClientRect().bottom > 0);
             if (under)
-                add({ kind: "under-bar", element: describe(under), detail: `held by ${describe(el)} at ${Math.round(under.getBoundingClientRect().top)}px, the top bar covers down to ${Math.round(covered)}px` });
+                add({
+                    kind: "under-bar",
+                    element: describe(under),
+                    detail: `held by ${describe(el)} at ${Math.round(under.getBoundingClientRect().top)}px, the top bar covers down to ${Math.round(covered)}px`,
+                });
             if (box.bottom > vh + 1 && getComputedStyle(el).overflow !== "visible")
                 add({ kind: "past-bottom", element: describe(el), detail: `holds ${Math.round(box.bottom - vh)}px below the screen, and it clips them` });
         }
@@ -90,8 +95,7 @@ const inspect = async ({ barSelector }) => {
         for (const el of texts) {
             const box = el.getBoundingClientRect();
             if (box.bottom < 0 || box.top > vh || hidden(el)) continue;
-            if (box.right > vw + 1 || box.left < -1)
-                add({ kind: "off-screen", element: describe(el), detail: `spans ${Math.round(box.left)}px to ${Math.round(box.right)}px on a ${vw}px screen` });
+            if (box.right > vw + 1 || box.left < -1) add({ kind: "off-screen", element: describe(el), detail: `spans ${Math.round(box.left)}px to ${Math.round(box.right)}px on a ${vw}px screen` });
         }
     }
 
@@ -114,9 +118,18 @@ const inspect = async ({ barSelector }) => {
             add({ kind: "anchor", element: hash, detail: `lands at ${Math.round(box.top)}px, under the top bar (${Math.round(barBox.bottom)}px)` });
     }
     scrollTo(0, 0);
-    pin.remove();
     return problems;
 };
+
+// Until the new page has loaded, its fonts are in and the scripts have had a moment to place things.
+async function loaded() {
+    for (let tries = 0; tries < 100; tries++) {
+        const { result } = await cdp.send("Runtime.evaluate", { expression: "!window.layoutStale && document.readyState === 'complete'", returnByValue: true });
+        if (result.value) break;
+        await new Promise((done) => setTimeout(done, 100));
+    }
+    await cdp.send("Runtime.evaluate", { expression: "document.fonts.ready.then(() => new Promise((done) => setTimeout(done, 300)))", awaitPromise: true });
+}
 
 // A small client for the Chrome DevTools protocol, enough for one page.
 async function connect(url) {
@@ -162,35 +175,54 @@ function serveDist() {
     return new Promise((done) => server.listen(0, "127.0.0.1", () => done(server)));
 }
 
+const BAR = ".topbar";
+// The bar shown, whatever moves it, and everything in it.
+const PIN_CSS = `${BAR}, ${BAR} * { transform: none !important; translate: none !important; opacity: 1 !important; transition: none !important; }`;
+
 const server = option("--url") ? null : await serveDist();
 const url = option("--url") ?? `http://127.0.0.1:${server.address().port}/`;
 const profile = mkdtempSync(join(tmpdir(), "layout-"));
-const child = spawn(chrome, ["--headless=new", "--remote-debugging-port=0", "--use-angle=swiftshader", "--enable-unsafe-swiftshader", "--ignore-gpu-blocklist", "--hide-scrollbars", `--user-data-dir=${profile}`, "about:blank"], { stdio: ["ignore", "ignore", "pipe"] });
-const browserUrl = await new Promise((done, fail) => {
-    let log = "";
-    child.stderr.on("data", (d) => {
-        log += d;
-        const found = log.match(/DevTools listening on (ws:\/\/\S+)/);
-        if (found) done(found[1]);
-    });
-    setTimeout(() => fail(new Error("Chrome did not start")), 20000).unref();
-});
-const { port } = new URL(browserUrl);
-const pages = await (await fetch(`http://127.0.0.1:${port}/json/list`)).json();
-const cdp = await connect(pages.find((p) => p.type === "page").webSocketDebuggerUrl);
-await cdp.send("Page.enable");
-await cdp.send("Runtime.enable");
-if (shots) mkdirSync(shots, { recursive: true });
-
+let cdp = null;
 let failed = 0;
+const child = spawn(
+    chrome,
+    [
+        "--headless=new",
+        "--remote-debugging-port=0",
+        "--use-angle=swiftshader",
+        "--enable-unsafe-swiftshader",
+        "--ignore-gpu-blocklist",
+        "--hide-scrollbars",
+        `--user-data-dir=${profile}`,
+        "about:blank",
+    ],
+    { stdio: ["ignore", "ignore", "pipe"] },
+);
 try {
+    const browserUrl = await new Promise((done, fail) => {
+        let log = "";
+        child.stderr.on("data", (d) => {
+            log += d;
+            const found = log.match(/DevTools listening on (ws:\/\/\S+)/);
+            if (found) done(found[1]);
+        });
+        setTimeout(() => fail(new Error("Chrome did not start")), 20000).unref();
+    });
+    const { port } = new URL(browserUrl);
+    const pages = await (await fetch(`http://127.0.0.1:${port}/json/list`)).json();
+    cdp = await connect(pages.find((p) => p.type === "page").webSocketDebuggerUrl);
+    await cdp.send("Page.enable");
+    await cdp.send("Runtime.enable");
+    if (shots) mkdirSync(shots, { recursive: true });
+
     for (const view of VIEWPORTS) {
         await cdp.send("Emulation.setDeviceMetricsOverride", { width: view.width, height: view.height, deviceScaleFactor: 1, mobile: view.mobile });
         await cdp.send("Emulation.setTouchEmulationEnabled", { enabled: view.mobile });
+        await cdp.send("Runtime.evaluate", { expression: "window.layoutStale = true" });
         await cdp.send("Page.navigate", { url });
-        await new Promise((done) => setTimeout(done, 1500));
+        await loaded();
         const { result, exceptionDetails } = await cdp.send("Runtime.evaluate", {
-            expression: `(${inspect})(${JSON.stringify({ barSelector: ".topbar" })})`,
+            expression: `(${inspect})(${JSON.stringify({ barSelector: BAR, pinCss: PIN_CSS })})`,
             awaitPromise: true,
             returnByValue: true,
         });
@@ -209,7 +241,7 @@ try {
         failed += problems.length;
     }
 } finally {
-    cdp.close();
+    cdp?.close();
     child.kill();
     server?.close();
     rmSync(profile, { recursive: true, force: true, maxRetries: 3 });
