@@ -12,11 +12,7 @@ component Features {
           if i == 0 {
             image "/img/ship.png" alt=T.shipAlt class="ship" width=150 height=78 loading="lazy"
           } else if i == 1 {
-            column class="menu choices" data-ui="choices" aria-hidden="true" {
-              for option, j in T.choices key j {
-                text option class=(j == 0 ? "menu-item on" : "menu-item")
-              }
-            }
+            Decision
           } else if i == 2 {
             column class="bonds" data-ui="crew" aria-hidden="true" {
               for bond, j in T.bonds key j {

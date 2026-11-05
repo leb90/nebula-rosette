@@ -1,6 +1,6 @@
 # Rosette Nebula: la página
 
-La página de [Rosette Nebula](https://leb90.github.io/nebula-rosette/), un RPG espacial de ciencia ficción dura, para un jugador y en pixel art. Está hecha en [ArtScript](https://artscript.dev).
+La página de [Rosette Nebula](https://nebularosette.com), un RPG espacial de ciencia ficción dura, para un jugador y en pixel art. Está hecha en [ArtScript](https://artscript.dev).
 
 ## Abrir el Patreon
 
@@ -19,10 +19,10 @@ Con eso, todos los botones que dicen que abre pronto pasan a apoyar y llevan a P
 | `npm run dev` | La página en local, con recarga al guardar. |
 | `npx art check --ai` | Revisa el código. |
 | `npx art test` | Corre las pruebas de `src/tests.art`. |
-| `npm run build` | Compila para GitHub Pages en `dist/`. |
-| `node tools/serve-dist.mjs` | Sirve `dist/` bajo `/nebula-rosette/`, como GitHub Pages, en el puerto 4173. |
+| `npm run build` | Compila para `nebularosette.com` en `dist/`. |
+| `node tools/serve-dist.mjs` | Sirve `dist/` en el puerto 4173, igual que el sitio publicado. |
 
-Cada push a `main` revisa, prueba y publica la página (`.github/workflows/pages.yml`).
+Cada push a `main` revisa, prueba y publica la página en GitHub Pages (`.github/workflows/pages.yml`). La página abre en inglés; quien elige español lo mantiene en sus próximas visitas.
 
 ## Dónde está cada cosa
 

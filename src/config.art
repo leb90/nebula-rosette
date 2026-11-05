@@ -46,7 +46,32 @@ const COPY = {
     ],
     navSupport: "Patreon",
     shipAlt: "Plano de una nave vista desde arriba: una grilla de módulos de colores, con algunos lugares todavía vacíos",
-    choices: ["Pelear", "Escapar", "Esconderte en la nebulosa", "Negociar", "Sacrificar algo"],
+    decision: {
+      prompt: "Una emboscada al salir de un salto. ¿Qué hacés?",
+      note: "Ejemplo escrito para esta página. Las batallas entre naves todavía no están en el juego.",
+      options: [
+        {
+          label: "Pelear",
+          outcome: "Ganás tiempo, pero el blindaje queda abierto. Repararlo va a costar recursos que no te sobran."
+        },
+        {
+          label: "Escapar",
+          outcome: "El salto quema la energía que te quedaba. Una nave de la flota no llega a salir."
+        },
+        {
+          label: "Esconderte en la nebulosa",
+          outcome: "El gas también te deja sin sensores. Si te encuentran, no los vas a ver venir."
+        },
+        {
+          label: "Negociar",
+          outcome: "Te dejan pasar, y parte de tu tripulación no te perdona lo que les diste."
+        },
+        {
+          label: "Sacrificar algo",
+          outcome: "Soltás la bodega para frenarlos. La flota sigue entera, con menos de lo que necesita para fundar una base."
+        },
+      ],
+    },
     bonds: [
       { role: "Piloto", value: 70 },
       { role: "Ingeniería", value: 30 },
@@ -203,7 +228,32 @@ const COPY = {
     ],
     navSupport: "Patreon",
     shipAlt: "Plan of a ship seen from above: a grid of coloured modules, with some slots still empty",
-    choices: ["Fight", "Run", "Hide in the nebula", "Negotiate", "Give something up"],
+    decision: {
+      prompt: "An ambush as you come out of a jump. What do you do?",
+      note: "An example written for this page. Ship battles aren't in the game yet.",
+      options: [
+        {
+          label: "Fight",
+          outcome: "You buy time, but the armour is open. Repairs will cost resources you can't spare."
+        },
+        {
+          label: "Run",
+          outcome: "The jump burns the energy you had left. One ship of the fleet doesn't make it out."
+        },
+        {
+          label: "Hide in the nebula",
+          outcome: "The gas blinds your sensors too. If they find you, you won't see them coming."
+        },
+        {
+          label: "Negotiate",
+          outcome: "They let you through, and part of your crew won't forgive what you gave them."
+        },
+        {
+          label: "Give something up",
+          outcome: "You drop the cargo hold to slow them down. The fleet survives, with less than it needs to found a base."
+        },
+      ],
+    },
     bonds: [
       { role: "Pilot", value: 70 },
       { role: "Engineering", value: 30 },

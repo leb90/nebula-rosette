@@ -1,4 +1,4 @@
-// The simulated browser speaks English, so each test picks the language it reads.
+// The page opens in English; a test that reads Spanish chooses it first.
 
 test "the first screen says what this is and opens as the menu" {
   open "/"
@@ -9,7 +9,7 @@ test "the first screen says what this is and opens as the menu" {
   see "Quedan pocas naves"
 }
 
-test "a visitor whose browser is not in Spanish reads the page in English" {
+test "the page opens in English" {
   open "/"
   see "Patreon opens soon"
 }
@@ -49,4 +49,21 @@ test "the end of the page says it is made with ArtScript" {
   see "Hecho en ArtScript"
   click "EN"
   see "Made with ArtScript"
+}
+
+test "each option of a decision shows what it costs" {
+  open "/"
+  notSee "They let you through"
+  click "Negotiate"
+  see "They let you through"
+  click "Run"
+  see "One ship of the fleet"
+  notSee "They let you through"
+}
+
+test "the decision works in Spanish too" {
+  open "/"
+  click "ES"
+  click "Negociar"
+  see "Te dejan pasar"
 }

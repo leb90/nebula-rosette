@@ -1,7 +1,7 @@
 use "./scene/space.ts" { startSpace }
 
-// The language of the page: the visitor's own the first time, then whatever they chose.
-state lang = "es"
+// The page opens in English. Spanish is there for whoever chooses it, and that choice is remembered.
+state lang = "en"
 computed T = COPY[lang]
 
 fn showLanguage(next) {
@@ -19,7 +19,7 @@ fn pickLanguage(next) {
 }
 
 page Home "/" {
-  meta title=COPY.es.meta.title description=COPY.es.meta.description image="/og.png" imageAlt=COPY.es.planetAlt siteName="Rosette Nebula" locale="es_AR" themeColor="#06050c" lang="es" theme="dark" jsonld={ "@type": "VideoGame", name: "Rosette Nebula", description: COPY.en.meta.description, genre: ["Role-playing", "Science fiction"], gamePlatform: ["macOS", "Windows"], numberOfPlayers: { "@type": "QuantitativeValue", value: 1 }, author: { "@type": "Person", name: AUTHOR }, inLanguage: ["es", "en"] }
+  meta title=COPY.en.meta.title description=COPY.en.meta.description image="/og.png" imageAlt=COPY.en.planetAlt siteName="Rosette Nebula" locale="en_US" themeColor="#06050c" lang="en" theme="dark" jsonld={ "@type": "VideoGame", name: "Rosette Nebula", description: COPY.en.meta.description, genre: ["Role-playing", "Science fiction"], gamePlatform: ["macOS", "Windows"], numberOfPlayers: { "@type": "QuantitativeValue", value: 1 }, author: { "@type": "Person", name: AUTHOR }, inLanguage: ["es", "en"] }
 
   ref sky
 
@@ -33,7 +33,7 @@ page Home "/" {
     } catch (e) {
     }
     let asked = new URLSearchParams(location.search).get("lang")
-    let wanted = asked == "es" || asked == "en" ? asked : saved ?? (navigator.language.toLowerCase().startsWith("es") ? "es" : "en")
+    let wanted = asked == "es" || asked == "en" ? asked : saved ?? "en"
     if wanted != lang {
       showLanguage(wanted)
     }

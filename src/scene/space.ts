@@ -107,6 +107,28 @@ float fbm(vec3 p, int octaves) {
     return sum / total;
 }
 
+const float STAR = 0.99722;     // one cell in 360 holds a star
+const float FLASHING = 0.05;    // of those, how many flash with a cross at their peak
+const float GOING_OUT = 0.14;   // how many go out altogether and come back (the flashing ones among them)
+const float BREATHING = 0.38;   // how many dim and brighten without going out
+const vec2 ARMS[4] = vec2[4](vec2(1.0, 0.0), vec2(-1.0, 0.0), vec2(0.0, 1.0), vec2(0.0, -1.0));
+
+vec3 starTint(vec2 cell) {
+    float kind = hash12(cell + 19.0);
+    return kind < 0.15 ? vec3(0.949, 0.769, 0.541) : kind < 0.35 ? vec3(0.663, 0.784, 0.941) : vec3(0.902, 0.925, 0.961);
+}
+
+// How bright a star is right now, in steps like the rest of the art. Each one keeps its own time.
+float starLight(vec2 cell) {
+    float base = hash12(cell + 31.0) < 0.12 ? 1.0 : 0.55;
+    float mode = hash12(cell + 43.0);
+    if (mode >= BREATHING) return base;
+    float speed = 0.6 + hash12(cell + 19.0) * 1.2;
+    float wave = 0.5 + 0.5 * sin(uTime * speed + hash12(cell + 57.0) * 6.2832);
+    float light = mode < GOING_OUT ? smoothstep(0.3, 0.8, wave) * max(base, 0.85) : base * (0.45 + 0.55 * wave);
+    return floor(light * 6.0 + 0.5) / 6.0;
+}
+
 vec4 sky(ivec2 ip, vec2 p, float dither) {
     if (uCutout > 0.5) return vec4(0.0);
     vec3 color = SPACE;
@@ -117,13 +139,17 @@ vec4 sky(ivec2 ip, vec2 p, float dither) {
     if (glow > 0.006 + dither * 0.05) color = shade(${ramp("NEBULA")}, min(1.0, glow * 0.9), dither);
 
     vec2 cell = floor(p + uParallax);
-    float star = hash12(cell + 7.0);
-    if (star > 0.99722) {
-        float kind = hash12(cell + 19.0);
-        float bright = hash12(cell + 31.0) < 0.12 ? 1.0 : 0.55;
-        if (hash12(cell + 43.0) < 0.3) bright *= 0.55 + 0.45 * sin(uTime / (1.5 + kind * 4.0) + star * 90.0);
-        vec3 tint = kind < 0.15 ? vec3(0.949, 0.769, 0.541) : kind < 0.35 ? vec3(0.663, 0.784, 0.941) : vec3(0.902, 0.925, 0.961);
-        color = max(color, tint * bright);
+    if (hash12(cell + 7.0) > STAR) {
+        color = max(color, starTint(cell) * starLight(cell));
+    } else {
+        // The stars that flash throw a small cross of light at their peak.
+        for (int i = 0; i < 4; i++) {
+            vec2 near = cell + ARMS[i];
+            if (hash12(near + 7.0) > STAR && hash12(near + 43.0) < FLASHING) {
+                float light = starLight(near);
+                if (light > 0.7) color = max(color, starTint(near) * (light - 0.35));
+            }
+        }
     }
     return vec4(color, 1.0);
 }

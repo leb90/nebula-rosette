@@ -1,0 +1,19 @@
+// A decision like the ones on the way: pick an option and see what it costs. The outcomes are written for this page.
+component Decision {
+  state picked = -1
+
+  column class="decision" data-ui="decision" {
+    text T.decision.prompt tag=p class="decision-prompt"
+    column class="menu choices" role="group" aria-label=T.decision.prompt {
+      for option, i in T.decision.options key i {
+        button option.label class=(i == picked ? "menu-item on" : "menu-item") aria-pressed=(i == picked) -> picked = i
+      }
+    }
+    column class="decision-outcome" aria-live="polite" {
+      if picked >= 0 {
+        text T.decision.options[picked].outcome tag=p
+      }
+    }
+    text T.decision.note tag=p class="decision-note"
+  }
+}
