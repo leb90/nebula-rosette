@@ -6,8 +6,9 @@
   "scripts": {
     "dev": "art dev",
     "start": "art dev",
-    "build": "art build",
-    "check": "art check"
+    "check": "art check",
+    "test": "art test",
+    "build": "art build --prerender --site https://leb90.github.io/nebula-rosette"
   },
   "devDependencies": {
     "@artscript/core": "^0.2.19",

@@ -1,0 +1,44 @@
+// One flat field per thing you do in the game, butted together. Each one carries a piece of that idea: the plan of a
+// ship, the options of a decision, the trust of the crew, the ways of fighting.
+component Features {
+  fn bondStyle(value) {
+    return value >= 0 ? `left:50%;width:${value / 2}%` : `left:${50 + value / 2}%;width:${-value / 2}%`
+  }
+
+  column id="juego" class="fields" {
+    for item, i in T.features key i {
+      column tag=section class=`field tone-${FIELD_TONES[i]} ${i % 2 == 1 ? "field-flip" : ""}` {
+        column class="field-visual" reveal {
+          if i == 0 {
+            image "/img/ship.png" alt=T.shipAlt class="ship" width=150 height=78 loading="lazy"
+          } else if i == 1 {
+            column class="menu choices" data-ui="choices" aria-hidden="true" {
+              for option, j in T.choices key j {
+                text option class=(j == 0 ? "menu-item on" : "menu-item")
+              }
+            }
+          } else if i == 2 {
+            column class="bonds" data-ui="crew" aria-hidden="true" {
+              for bond, j in T.bonds key j {
+                row class="bond" {
+                  text bond.role class="bond-role"
+                  column class="bond-track" {
+                    column class=(bond.value >= 0 ? "bond-fill bond-up" : "bond-fill bond-down") style=bondStyle(bond.value)
+                  }
+                }
+              }
+            }
+          } else {
+            grid class="specialties" cols=2 md:cols=3 data-ui="specialties" {
+              for name, j in T.specialties key j {
+                text name class="specialty"
+              }
+            }
+          }
+        }
+        text item.body tag=p class="field-body" reveal
+        title item.title tag=h2 class="display field-title" reveal
+      }
+    }
+  }
+}

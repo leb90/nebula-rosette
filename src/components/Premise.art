@@ -1,0 +1,14 @@
+// The story, told while the scroll holds still: the camera pulls back from the horizon, the moons go round the
+// planet, the lights of the colonies go out and a few ships leave. The picture is drawn by scene/space.ts.
+component Premise {
+  column tag=section id="historia" class="premise" {
+    column class="premise-stage" {
+      title T.premise.title tag=h2 class="display premise-title"
+      column class="premise-lines" {
+        for line, i in T.premise.lines key i {
+          text line tag=p class=(i == 0 ? "premise-line on" : "premise-line")
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,52 @@
+// The simulated browser speaks English, so each test picks the language it reads.
+
+test "the first screen says what this is and opens as the menu" {
+  open "/"
+  click "ES"
+  see "Rosette"
+  see "Patreon abre pronto"
+  see "La historia"
+  see "Quedan pocas naves"
+}
+
+test "a visitor whose browser is not in Spanish reads the page in English" {
+  open "/"
+  see "Patreon opens soon"
+}
+
+test "changing the language changes the page" {
+  open "/"
+  click "ES"
+  see "Cómo se juega"
+  click "EN"
+  see "How it plays"
+  see "Few ships left"
+  click "ES"
+  see "Cómo se juega"
+}
+
+test "the terraforming stages change the world" {
+  open "/"
+  click "ES"
+  see "Mundo muerto"
+  click "Vida"
+  see "Las primeras algas tiñen las costas."
+  click "Agua"
+  see "Cometas de hielo llenan de mares las partes bajas."
+}
+
+test "while the Patreon is closed the page says it opens soon" {
+  open "/"
+  click "ES"
+  see "El Patreon de Rosette Nebula abre pronto."
+  click "EN"
+  see "The Rosette Nebula Patreon opens soon."
+}
+
+test "the end of the page says it is made with ArtScript" {
+  open "/"
+  click "ES"
+  see "Hecho en ArtScript"
+  click "EN"
+  see "Made with ArtScript"
+}

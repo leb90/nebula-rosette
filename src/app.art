@@ -1,13 +1,63 @@
-page Home "/" {
-  state count = 0
+use "./scene/space.ts" { startSpace }
 
-  column gap=4 align=center pad=8 {
-    title "Hello ArtScript"
-    text "Edit src/app.art and save: the page reloads by itself." muted
-    row gap=2 {
-      button "-" -> count--
-      text count bold
-      button "+" primary -> count++
+// The language of the page: the visitor's own the first time, then whatever they chose.
+state lang = "es"
+computed T = COPY[lang]
+
+fn showLanguage(next) {
+  lang = next
+  document.documentElement.lang = next
+  document.title = COPY[next].meta.title
+}
+
+fn pickLanguage(next) {
+  showLanguage(next)
+  try {
+    localStorage.setItem("lang", next)
+  } catch (e) {
+  }
+}
+
+page Home "/" {
+  meta title=COPY.es.meta.title description=COPY.es.meta.description image="/og.png" imageAlt=COPY.es.planetAlt siteName="Rosette Nebula" locale="es_AR" themeColor="#06050c" lang="es" theme="dark" jsonld={ "@type": "VideoGame", name: "Rosette Nebula", description: COPY.en.meta.description, genre: ["Role-playing", "Science fiction"], gamePlatform: ["macOS", "Windows"], numberOfPlayers: { "@type": "QuantitativeValue", value: 1 }, author: { "@type": "Person", name: AUTHOR }, inLanguage: ["es", "en"] }
+
+  ref sky
+
+  mount {
+    if !inBrowser() {
+      return
     }
+    let saved = null
+    try {
+      saved = localStorage.getItem("lang")
+    } catch (e) {
+    }
+    let asked = new URLSearchParams(location.search).get("lang")
+    let wanted = asked == "es" || asked == "en" ? asked : saved ?? (navigator.language.toLowerCase().startsWith("es") ? "es" : "en")
+    if wanted != lang {
+      showLanguage(wanted)
+    }
+    let space = startSpace(sky)
+    cleanup {
+      space.stop()
+    }
+  }
+
+  column class="page" {
+    column class="sky-frame" aria-hidden="true" {
+      image "/img/poster.png" alt="" class="sky-poster" width=480 height=300
+      canvas ref=sky class="sky"
+    }
+    Hero
+    TopBar
+    Premise
+    Features
+    Terraform
+    Nebula
+    Status
+    Author
+    Support
+    Faq
+    Footer
   }
 }

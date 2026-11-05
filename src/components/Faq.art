@@ -1,0 +1,13 @@
+component Faq {
+  column tag=section id="preguntas" class="faq" {
+    title T.faq.title tag=h2 class="display faq-title"
+    column class="faq-list" {
+      for item, i in T.faq.items key i {
+        column tag=details class="faq-item" {
+          text item.q tag=summary
+          text item.a tag=p
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,16 @@
+// The whole band is the action. While the Patreon isn't open it says so, and it isn't a link.
+component Support {
+  column tag=section id="apoyar" class="support" {
+    if PATREON_URL != "" {
+      link href=PATREON_URL target="_blank" class="band" {
+        text T.support.liveLine tag=p class="band-line"
+        title T.support.live tag=h2 class="band-word" style=`--n:${T.support.live.length}`
+      }
+    } else {
+      column class="band band-soon" {
+        text T.support.soonLine tag=p class="band-line"
+        title T.support.soon tag=h2 class="band-word" style=`--n:${T.support.soon.length}`
+      }
+    }
+  }
+}

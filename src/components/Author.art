@@ -1,0 +1,14 @@
+component Author {
+  column tag=section id="autor" class="author" {
+    column class="author-panel" {
+      column class="author-start" {
+        title T.author.title tag=h2 class="author-title display" reveal
+        image "/img/moon.png" alt="" class="author-moon" width=160 height=160 loading="lazy"
+      }
+      column class="author-end" {
+        text T.author.who tag=p reveal
+        text T.author.pays tag=p reveal
+      }
+    }
+  }
+}

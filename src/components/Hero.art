@@ -1,0 +1,79 @@
+// The first screen is the game's main menu, and it works like one: W and S (or the arrows) move, Enter chooses.
+component Hero {
+  state focused = 0
+  computed entries = [
+    {
+      label: PATREON_URL == "" ? T.hero.soon : T.hero.support,
+      to: PATREON_URL == "" ? "#apoyar" : PATREON_URL
+    },
+    ...T.hero.menu
+  ]
+  ref menu
+
+  fn links() {
+    return [...menu.querySelectorAll("a")]
+  }
+
+  fn move(by) {
+    focused = (focused + by + entries.length) % entries.length
+    links()[focused]?.focus({ preventScroll: true })
+  }
+
+  fn onKey(event) {
+    if window.scrollY > window.innerHeight * 0.5 || event.metaKey || event.ctrlKey || event.altKey {
+      return
+    }
+    let key = event.key.toLowerCase()
+    let inMenu = menu.contains(document.activeElement)
+    let idle = document.activeElement == document.body
+    if key == "w" || key == "arrowup" && inMenu {
+      event.preventDefault()
+      move(-1)
+    } else if key == "s" || key == "arrowdown" && inMenu {
+      event.preventDefault()
+      move(1)
+    } else if key == "enter" && idle {
+      links()[focused]?.click()
+    }
+  }
+
+  mount {
+    if !inBrowser() {
+      return
+    }
+    window.addEventListener("keydown", onKey)
+    cleanup {
+      window.removeEventListener("keydown", onKey)
+    }
+  }
+
+  column tag=section id="inicio" class="hero" {
+    LanguageSwitch
+    column class="hero-main" {
+      title tag=h1 class="hero-name" aria-label="Rosette Nebula" {
+        text "Rosette" class="mask"
+        text "Nebula" class="mask mask-2"
+      }
+      column class="pixel-bar" aria-hidden="true"
+      text T.hero.sub tag=p class="hero-sub"
+      column tag=nav ref=menu class="menu" data-ui="menu" aria-label=T.hero.menuLabel {
+        for entry, i in entries key entry.to {
+          link entry.label to=entry.to class=(i == focused ? "menu-item on" : "menu-item") on:mouseenter=(focused = i) on:focus=(focused = i)
+        }
+      }
+    }
+    row class="hero-foot" justify=between {
+      row class="hints" gap=4 aria-hidden="true" {
+        row gap=2 align=center {
+          text "Enter" class="key"
+          text T.hero.choose
+        }
+        row gap=2 align=center {
+          text "W S" class="key"
+          text T.hero.move
+        }
+      }
+      text `${T.hero.version} ${VERSION}` class="version"
+    }
+  }
+}

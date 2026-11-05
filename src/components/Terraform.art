@@ -1,0 +1,72 @@
+use "../scene/space.ts" { setTerraform }
+
+// The live thing: drag the stage and the same shader as the menu's planet brings a dead world back. The world sits
+// behind a board of tiles, as if seen through the windows of a bridge.
+component Terraform {
+  state amount = 0
+  state touched = false
+  computed stage = Math.min(4, Math.floor(Number(amount) / 25 + 0.001))
+  computed current = T.world.stages[stage]
+  ref box
+
+  effect {
+    setTerraform(Number(amount) / 100)
+  }
+
+  fn go(i) {
+    touched = true
+    amount = i * 25
+  }
+
+  mount {
+    // Until someone touches it, it plays once by itself when it comes into view.
+    if !inBrowser() || matchMedia("(prefers-reduced-motion: reduce)").matches {
+      return
+    }
+    let timer = null
+    let watch = new IntersectionObserver(entries => {
+      if entries[0].isIntersecting && !touched && !timer {
+        timer = setInterval(() => {
+          if touched || Number(amount) >= 75 {
+            clearInterval(timer)
+            return
+          }
+          amount = Number(amount) + 0.5
+        }, 60)
+        watch.disconnect()
+      }
+    }, { threshold: 0.5 })
+    watch.observe(box)
+    cleanup {
+      watch.disconnect()
+      clearInterval(timer)
+    }
+  }
+
+  column tag=section id="terraformar" ref=box class="world" {
+    column class="world-panes" aria-hidden="true" {
+      for n in Array.from({ length: 24 }, (_, i) => i) key n {
+        column class="pane"
+      }
+    }
+    column class="world-copy" {
+      title T.world.title tag=h2 class="display world-title"
+      text T.world.body tag=p class="world-body"
+    }
+    column class="world-control" {
+      text current.name tag=h3 class="world-stage"
+      text current.text tag=p class="world-text"
+      input amount type=range min=0 max=100 step=1 label=T.world.slider class="world-slider" on:input=(touched = true)
+      row tag=ol class="world-stops" {
+        for s, i in T.world.stages key i {
+          item class=(i == stage ? "stop on" : "stop") {
+            button class="stop-button" aria-label=s.name -> go(i) {
+              image `/img/world-${i}.png` alt="" width=72 height=72 loading="lazy"
+            }
+          }
+        }
+      }
+      text T.world.note tag=p class="world-note"
+    }
+  }
+}

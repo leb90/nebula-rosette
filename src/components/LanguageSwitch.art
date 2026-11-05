@@ -1,0 +1,6 @@
+component LanguageSwitch {
+  row class="lang" role="group" aria-label=T.languageLabel {
+    button "ES" class=(lang == "es" ? "lang-on" : "") aria-pressed=(lang == "es") -> pickLanguage("es")
+    button "EN" class=(lang == "en" ? "lang-on" : "") aria-pressed=(lang == "en") -> pickLanguage("en")
+  }
+}

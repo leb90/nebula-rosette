@@ -1,0 +1,19 @@
+// A plain bar that stays once the first screen has gone.
+component TopBar {
+  row tag=header class="topbar" align=center justify=between {
+    link "Rosette Nebula" to="#inicio" class="wordmark"
+    row tag=nav class="topbar-links" align=center aria-label="Rosette Nebula" {
+      for item in T.nav key item.to {
+        link item.label to=item.to
+      }
+    }
+    row class="topbar-end" align=center {
+      if PATREON_URL != "" {
+        link T.navSupport href=PATREON_URL target="_blank" class="bar-action"
+      } else {
+        link T.navSupport to="#apoyar" class="bar-action"
+      }
+      LanguageSwitch
+    }
+  }
+}

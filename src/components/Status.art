@@ -1,0 +1,25 @@
+// The honest part: what runs today, what doesn't yet. Nothing here is a promise.
+component Status {
+  column tag=section id="estado" class="status" {
+    column class="status-head" {
+      title T.status.title tag=h2 class="display status-title" reveal
+      text T.status.body tag=p class="status-body" reveal
+    }
+    grid class="board" cols=2 md:cols=4 stagger {
+      for tile, i in T.status.done key i {
+        column class="tile" reveal {
+          text tile.mark class="tile-mark"
+          text tile.text class="tile-text"
+        }
+      }
+    }
+    column class="left" {
+      title T.status.leftTitle tag=h2 class="display left-title" reveal
+      column tag=ol class="left-list" {
+        for name, i in T.status.left key i {
+          text name tag=li reveal
+        }
+      }
+    }
+  }
+}

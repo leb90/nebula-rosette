@@ -1,0 +1,329 @@
+// What people change lives here: the Patreon address, the version and every text of the page in both languages.
+
+// Paste the campaign's address here when it opens. While it is empty the page says the Patreon opens soon.
+const PATREON_URL = ""
+const ARTSCRIPT_URL = "https://artscript.dev"
+const VERSION = "0.1.0"
+const AUTHOR = "Leandro Bisceglie"
+const NEBULA_PHOTO_URL = "https://commons.wikimedia.org/wiki/File:The_Rosette_Nebula_Caldwell_49_50_Broadband.jpg"
+
+// The ground and ink of each chapter about how the game plays. The colours come from the game's own ramps.
+const FIELD_TONES = ["rust", "ocean", "sand", "ember"]
+
+// mount also runs while the page is prerendered, on a DOM that isn't a browser's.
+fn inBrowser() {
+  return !globalThis.__artSSR && !globalThis.__artStatic
+}
+
+const COPY = {
+  es: {
+    meta: {
+      title: "Rosette Nebula: RPG espacial en pixel art",
+      description: "Un RPG espacial de ciencia ficción dura, para un jugador y en pixel art. Una flota, pocas naves y mundos por revivir. En desarrollo para macOS y Windows.",
+    },
+    planetAlt: "Un planeta oceánico con dos lunas sobre la Nebulosa Roseta, en pixel art",
+    languageLabel: "Idioma",
+    hero: {
+      sub: "RPG espacial de ciencia ficción dura, para un jugador y en pixel art. En desarrollo para macOS y Windows.",
+      support: "Apoyar en Patreon",
+      soon: "Patreon abre pronto",
+      menu: [
+        { label: "La historia", to: "#historia" },
+        { label: "Cómo se juega", to: "#juego" },
+        { label: "Estado del desarrollo", to: "#estado" },
+      ],
+      menuLabel: "Menú",
+      choose: "Elegir",
+      move: "Moverse",
+      version: "versión",
+    },
+    nav: [
+      { label: "Historia", to: "#historia" },
+      { label: "El juego", to: "#juego" },
+      { label: "Terraformar", to: "#terraformar" },
+      { label: "Estado", to: "#estado" },
+      { label: "Preguntas", to: "#preguntas" },
+    ],
+    navSupport: "Patreon",
+    shipAlt: "Plano de una nave vista desde arriba: una grilla de módulos de colores, con algunos lugares todavía vacíos",
+    choices: ["Pelear", "Escapar", "Esconderte en la nebulosa", "Negociar", "Sacrificar algo"],
+    bonds: [
+      { role: "Piloto", value: 70 },
+      { role: "Ingeniería", value: 30 },
+      { role: "Medicina", value: -15 },
+      { role: "Combate", value: -55 },
+    ],
+    specialties: ["Asalto", "Técnico de combate", "Enjambrista", "Tirador", "Guardián", "Abordador"],
+    premise: {
+      title: "Quedan pocas naves",
+      lines: [
+        "Una especie conquistadora está borrando las colonias humanas, una por una.",
+        "De toda la humanidad queda una flota de pocas naves.",
+        "Vos tenés el mando de una. Ahora hay que encontrar mundos donde vivir.",
+      ],
+    },
+    features: [
+      {
+        title: "Armá tu nave",
+        body: "Elegís el casco y acomodás los módulos en una grilla. El interior se arma solo con lo que pusiste, y mejorarla con recursos, o no hacerlo, se nota en el final."
+      },
+      {
+        title: "Decidir pesa",
+        body: "Las batallas entre naves se resuelven decidiendo: pelear, escapar, esconderte en la nebulosa, negociar o sacrificar algo. Los daños y la gente perdida no vuelven. Hay varios finales."
+      },
+      {
+        title: "Tu gente recuerda",
+        body: "Hablás con cada tripulante entre misión y misión. La relación sube o baja, hay romances de todo tipo, y quien dejó de confiar en vos no está cuando importa."
+      },
+      {
+        title: "Peleá a tu manera",
+        body: "Seis especialidades, cada una con su árbol de habilidades, del nivel 1 al 12: armas de fuego, técnica o enjambres de nanobots. Y dungeons en el espacio para usarlas."
+      },
+    ],
+    world: {
+      title: "Reviví un mundo muerto",
+      body: "Algunos planetas no tienen aire ni agua. Los terraformás por etapas: ponés algo en marcha, pasa el tiempo y crece. Las bases que fundes ahí producen recursos para tu nave.",
+      slider: "Etapa de terraformación",
+      note: "Demo hecha para esta página. La terraformación todavía no está en el juego.",
+      stages: [
+        { name: "Mundo muerto", text: "Roca y óxido, sin aire y sin agua." },
+        { name: "Atmósfera", text: "Los procesadores empiezan a espesar el cielo." },
+        { name: "Temperatura", text: "El aire retiene el calor y aparecen las primeras nubes." },
+        { name: "Agua", text: "Cometas de hielo llenan de mares las partes bajas." },
+        { name: "Vida", text: "Las primeras algas tiñen las costas." },
+      ],
+    },
+    nebula: {
+      title: "La Roseta existe",
+      body: "La Roseta es una nube de gas donde nacen estrellas. El viento de las estrellas jóvenes de su centro la vació y le dio forma de rosa. Las reglas del juego salen de la misma ciencia.",
+      alt: "La Nebulosa Roseta: una nube roja en forma de rosa, con un cúmulo de estrellas en su centro vacío",
+      caption: "La Nebulosa Roseta. Foto de Dylan O'Donnell, llevada a la paleta del juego.",
+      rules: [
+        {
+          title: "Saltar cuesta",
+          text: "Los motores de Alcubierre comprimen el espacio delante de la nave. Sin un Faro Colector cerca, cargar un salto lleva días o semanas."
+        },
+        {
+          title: "La inercia no perdona",
+          text: "En una maniobra de más de 15 G, la tripulación sobrevive dentro de cápsulas llenas de gel oxigenado."
+        },
+        {
+          title: "No hay magia",
+          text: "Lo que parece telequinesis son enjambres de nanobots: empujan, frenan balas y se recalientan."
+        },
+      ],
+    },
+    status: {
+      title: "Lo que ya funciona",
+      body: "Todo lo de arriba es el juego terminado. Esto es lo que corre hoy, en la versión 0.1.0. Todavía no es un MVP.",
+      done: [
+        { mark: "18", text: "poderes, con recarga e indicador de alcance" },
+        { mark: "6", text: "pasos para crear tu personaje" },
+        { mark: "5", text: "armas de fuego, con munición y balas que se ven volar" },
+        { mark: "2", text: "idiomas: español e inglés" },
+        { mark: "Rueda", text: "de conversación, con opciones que dependen de tus atributos" },
+        {
+          mark: "Cine",
+          text: "cinemática de apertura, con líneas que cambian según tu personaje"
+        },
+        { mark: "Guardar", text: "partidas en ranuras, con autoguardado" },
+        { mark: "Editor", text: "propio de mapas y contenido, para llegar a las 18 horas" },
+      ],
+      leftTitle: "Lo que falta",
+      left: [
+        "El prólogo completo", "Viajes entre sistemas", "Armar la nave", "Combate y enemigos",
+        "Dungeons espaciales", "Planetas e investigación", "Bases y terraformación",
+        "Los finales"
+      ],
+    },
+    author: {
+      title: "Lo hace una persona",
+      who: "Soy Leandro Bisceglie y hago Rosette Nebula solo. Para unas 18 horas de juego hacen falta del orden de 60 a 90 mapas, 80 personajes con diálogo y 50 o 60 misiones. El cuello de botella no es el código: es el arte y el contenido.",
+      pays: "Tu apoyo paga lo que no puedo hacer solo: arte de planetas (terrenos, vegetación y cielos), personajes y retratos, música y sonido propios.",
+    },
+    support: {
+      live: "Apoyar",
+      liveLine: "Apoyá Rosette Nebula en Patreon.",
+      soon: "Pronto",
+      soonLine: "El Patreon de Rosette Nebula abre pronto.",
+    },
+    faq: {
+      title: "Preguntas",
+      items: [
+        {
+          q: "¿Cuándo sale?",
+          a: "Todavía no hay fecha. Primero tiene que estar el MVP, y recién después tiene sentido hablar de una salida."
+        },
+        { q: "¿Se puede jugar ya?", a: "Todavía no. No hay demo pública." },
+        {
+          q: "¿Por qué no hay capturas?",
+          a: "Porque todavía no representan al juego terminado. Voy a mostrar imágenes y un teaser cuando esté el MVP. El planeta de esta página sí sale del juego: es el de su menú principal, dibujado por código en tu navegador."
+        },
+        { q: "¿Cuánto dura?", a: "La idea son unas 18 horas en una partida normal." },
+        { q: "¿En qué plataformas?", a: "Escritorio: macOS y Windows." },
+        { q: "¿Es multijugador?", a: "No, es de un solo jugador." },
+        { q: "¿En qué idiomas?", a: "Español e inglés." },
+      ],
+    },
+    footer: {
+      by: "Un juego de Leandro Bisceglie",
+      fonts: "Tipografías: Pixelify Sans y Rajdhani (SIL OFL)",
+      photo: "Foto de la nebulosa: Dylan O'Donnell (CC0)",
+      top: "Volver arriba",
+      made: "Hecho en ArtScript",
+    },
+  },
+  en: {
+    meta: {
+      title: "Rosette Nebula: a pixel art space RPG",
+      description: "A hard sci-fi space RPG for one player, in pixel art. One fleet, few ships and dead worlds to bring back. In development for macOS and Windows.",
+    },
+    planetAlt: "An ocean planet with two moons over the Rosette Nebula, in pixel art",
+    languageLabel: "Language",
+    hero: {
+      sub: "A hard sci-fi space RPG for one player, in pixel art. In development for macOS and Windows.",
+      support: "Back it on Patreon",
+      soon: "Patreon opens soon",
+      menu: [
+        { label: "The story", to: "#historia" },
+        { label: "How it plays", to: "#juego" },
+        { label: "Development status", to: "#estado" },
+      ],
+      menuLabel: "Menu",
+      choose: "Choose",
+      move: "Move",
+      version: "version",
+    },
+    nav: [
+      { label: "Story", to: "#historia" },
+      { label: "The game", to: "#juego" },
+      { label: "Terraform", to: "#terraformar" },
+      { label: "Status", to: "#estado" },
+      { label: "Questions", to: "#preguntas" },
+    ],
+    navSupport: "Patreon",
+    shipAlt: "Plan of a ship seen from above: a grid of coloured modules, with some slots still empty",
+    choices: ["Fight", "Run", "Hide in the nebula", "Negotiate", "Give something up"],
+    bonds: [
+      { role: "Pilot", value: 70 },
+      { role: "Engineering", value: 30 },
+      { role: "Medicine", value: -15 },
+      { role: "Combat", value: -55 },
+    ],
+    specialties: ["Assault", "Combat technician", "Swarmer", "Marksman", "Guardian", "Boarder"],
+    premise: {
+      title: "Few ships left",
+      lines: [
+        "A conquering species is erasing the human colonies, one by one.",
+        "All that remains of humanity is a fleet of a few ships.",
+        "You command one of them. Now you have to find worlds to live on.",
+      ],
+    },
+    features: [
+      {
+        title: "Build your ship",
+        body: "Pick a hull and fit modules on a grid. The interior builds itself from what you placed, and upgrading it with resources, or not, shows in the ending."
+      },
+      {
+        title: "Choices stay",
+        body: "Ship battles are settled by choosing: fight, run, hide in the nebula, negotiate or give something up. Damage and lost people don't come back. There are several endings."
+      },
+      {
+        title: "Your crew remembers",
+        body: "You talk to each crew member between missions. Trust rises or falls, romance is open to anyone, and whoever stopped trusting you isn't there when it counts."
+      },
+      {
+        title: "Fight your way",
+        body: "Six specialties, each with its own skill tree, from level 1 to 12: firearms, tech or nanobot swarms. And dungeons in space to use them in."
+      },
+    ],
+    world: {
+      title: "Bring a dead world back",
+      body: "Some planets have no air and no water. You terraform them in stages: set something going, time passes, it grows. The bases you found there produce resources for your ship.",
+      slider: "Terraforming stage",
+      note: "A demo made for this page. Terraforming isn't in the game yet.",
+      stages: [
+        { name: "Dead world", text: "Rock and rust, no air and no water." },
+        { name: "Atmosphere", text: "Processors start to thicken the sky." },
+        { name: "Temperature", text: "The air holds heat and the first clouds form." },
+        { name: "Water", text: "Ice comets fill the lowlands with seas." },
+        { name: "Life", text: "The first algae stain the coasts." },
+      ],
+    },
+    nebula: {
+      title: "The Rosette is real",
+      body: "The Rosette is a cloud of gas where stars are born. The wind of the young stars at its centre hollowed it out and gave it the shape of a rose. The rules of the game come from the same science.",
+      alt: "The Rosette Nebula: a red, rose-shaped cloud with a cluster of stars in its hollow centre",
+      caption: "The Rosette Nebula. Photo by Dylan O'Donnell, brought into the game's palette.",
+      rules: [
+        {
+          title: "Jumps cost",
+          text: "Alcubierre drives compress space ahead of the ship. Without a Collector Beacon nearby, charging a jump takes days or weeks."
+        },
+        {
+          title: "Inertia doesn't forgive",
+          text: "In a manoeuvre above 15 g, the crew survives inside capsules full of oxygenated gel."
+        },
+        {
+          title: "There is no magic",
+          text: "What looks like telekinesis is nanobot swarms: they push, stop bullets and overheat."
+        },
+      ],
+    },
+    status: {
+      title: "What already works",
+      body: "Everything above is the finished game. This is what runs today, in version 0.1.0. It isn't an MVP yet.",
+      done: [
+        { mark: "18", text: "powers, with cooldowns and range indicators" },
+        { mark: "6", text: "steps to create your character" },
+        { mark: "5", text: "firearms, with ammo and bullets you can see fly" },
+        { mark: "2", text: "languages: English and Spanish" },
+        { mark: "Wheel", text: "for conversations, with options that depend on your attributes" },
+        { mark: "Film", text: "an opening cinematic, with lines that change with your character" },
+        { mark: "Saves", text: "in slots, with autosave" },
+        { mark: "Editor", text: "of its own for maps and content, to get to those 18 hours" },
+      ],
+      leftTitle: "What's left",
+      left: [
+        "The full prologue", "Travel between systems", "Building the ship", "Combat and enemies",
+        "Space dungeons", "Planets and research", "Bases and terraforming", "The endings"
+      ],
+    },
+    author: {
+      title: "One person makes this",
+      who: "I'm Leandro Bisceglie and I'm making Rosette Nebula alone. Around 18 hours of play takes on the order of 60 to 90 maps, 80 characters with dialogue and 50 or 60 missions. The bottleneck isn't the code: it's art and content.",
+      pays: "Your support pays for what I can't do alone: planet art (terrain, vegetation and skies), characters and portraits, original music and sound.",
+    },
+    support: {
+      live: "Support",
+      liveLine: "Back Rosette Nebula on Patreon.",
+      soon: "Soon",
+      soonLine: "The Rosette Nebula Patreon opens soon.",
+    },
+    faq: {
+      title: "Questions",
+      items: [
+        {
+          q: "When does it come out?",
+          a: "There's no date yet. The MVP comes first, and only then does talking about a release make sense."
+        },
+        { q: "Can I play it now?", a: "Not yet. There's no public demo." },
+        {
+          q: "Why are there no screenshots?",
+          a: "Because they don't represent the finished game yet. I'll show images and a teaser once the MVP is ready. The planet on this page does come from the game: it's the one from its main menu, drawn by code in your browser."
+        },
+        { q: "How long is it?", a: "The goal is about 18 hours in a normal playthrough." },
+        { q: "Which platforms?", a: "Desktop: macOS and Windows." },
+        { q: "Is it multiplayer?", a: "No, it's single-player." },
+        { q: "Which languages?", a: "English and Spanish." },
+      ],
+    },
+    footer: {
+      by: "A game by Leandro Bisceglie",
+      fonts: "Typefaces: Pixelify Sans and Rajdhani (SIL OFL)",
+      photo: "Nebula photo: Dylan O'Donnell (CC0)",
+      top: "Back to top",
+      made: "Made with ArtScript",
+    },
+  },
+}

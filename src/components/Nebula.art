@@ -1,0 +1,18 @@
+component Nebula {
+  column tag=section id="ciencia" class="nebula" {
+    image "/img/nebula.png" alt=T.nebula.alt class="nebula-photo" width=480 height=359 loading="lazy"
+    column class="nebula-text" {
+      title T.nebula.title tag=h2 class="display nebula-title" reveal
+      text T.nebula.body tag=p class="nebula-body" reveal
+      text T.nebula.caption tag=p class="nebula-caption"
+    }
+    grid class="nebula-rules" cols=1 md:cols=3 {
+      for rule, i in T.nebula.rules key i {
+        column class="rule" reveal {
+          title rule.title tag=h3 class="rule-title"
+          text rule.text tag=p
+        }
+      }
+    }
+  }
+}

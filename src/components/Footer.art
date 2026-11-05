@@ -1,0 +1,20 @@
+// The close: back to the first frame, one whole orbit later. The last thing on the page says what it is made with.
+component Footer {
+  column tag=footer id="cierre" class="close" {
+    row class="close-notes" justify=between wrap {
+      column class="close-credits" {
+        text T.footer.by tag=p
+        text T.footer.fonts tag=p
+        link T.footer.photo href=NEBULA_PHOTO_URL target="_blank"
+      }
+      link T.footer.top to="#inicio" class="close-top"
+    }
+    text "Rosette Nebula" tag=p class="close-name"
+    row class="made" justify=center {
+      link href=ARTSCRIPT_URL target="_blank" class="made-link" {
+        image "/img/artscript.png" alt="" width=28 height=28 loading="lazy"
+        text T.footer.made
+      }
+    }
+  }
+}
