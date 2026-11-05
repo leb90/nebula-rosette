@@ -394,10 +394,13 @@ const heroShot = (w: number, h: number) =>
         ? { x: w * 0.25, y: h * 2.7, r: h * 2.07, moonA: [w * 0.82, h * 0.26, h * 0.085] as const, moonB: [w * 0.72, h * 0.09, h * 0.035] as const }
         : { x: w * 0.1, y: h * 1.72, r: h * 0.94, moonA: [w * 0.8, h * 0.105, w * 0.11] as const, moonB: [w * 0.57, h * 0.055, w * 0.045] as const };
 
-const orbitShot = (w: number, h: number) =>
-    w >= h ? { x: w * 0.68, y: h * 0.54, r: h * 0.3 } : { x: w * 0.56, y: h * 0.68, r: w * 0.3 };
+// Once the first screen is gone the top bar covers the first `bar` art pixels: these shots are framed below it.
+const orbitShot = (w: number, h: number, bar = 0) =>
+    w >= h ? { x: w * 0.68, y: bar + (h - bar) * 0.54, r: h * 0.3 } : { x: w * 0.56, y: bar + (h - bar) * 0.68, r: w * 0.3 };
 
-const worldShot = (w: number, h: number) => (w >= h ? { x: w * 0.75, y: h * 0.5, r: Math.min(h * 0.4, w * 0.21) } : { x: w * 0.5, y: h * 0.43, r: w * 0.4 });
+// `wide`: the page's own two-column layout, which keeps its copy on the left even on a tall tablet.
+const worldShot = (w: number, h: number, bar = 0, wide = false) =>
+    wide || w >= h ? { x: w * 0.75, y: bar + (h - bar) * 0.5, r: Math.min(h * 0.4, w * 0.21) } : { x: w * 0.5, y: bar + (h - bar) * 0.43, r: w * 0.34 };
 
 function orbit(center: { x: number; y: number; r: number }, angle: number, size: number, ratio: number, slant: number) {
     const ax = Math.cos(angle) * center.r * size;
@@ -427,6 +430,7 @@ export function startSpace(canvas: HTMLCanvasElement) {
     let running = true;
     let raf = 0;
     let smoothed = window.scrollY;
+    let lastFrame = performance.now();
     let shownTerraform = 0;
     let lastDraw = -1e9;
     let slow = 0;
@@ -436,7 +440,7 @@ export function startSpace(canvas: HTMLCanvasElement) {
 
     const sections = { hero: document.getElementById("inicio"), premise: document.getElementById("historia"), world: document.getElementById("terraformar"), close: document.getElementById("cierre") };
     const lines = [...document.querySelectorAll<HTMLElement>(".premise-line")];
-    const place = { heroTop: 0, premiseTop: 0, premiseBottom: 0, worldTop: 0, worldBottom: 0, closeTop: 0, viewport: 1 };
+    const place = { heroTop: 0, premiseTop: 0, premiseBottom: 0, worldTop: 0, worldBottom: 0, closeTop: 0, viewport: 1, bar: 0, wide: false };
 
     const measure = () => {
         const y = window.scrollY;
@@ -457,6 +461,8 @@ export function startSpace(canvas: HTMLCanvasElement) {
         const scale = Math.max(2, Math.round(cssWidth / 480)) + quality;
         const width = Math.ceil(cssWidth / scale);
         const height = Math.ceil(Math.max(cssHeight, window.innerHeight) / scale);
+        place.wide = cssWidth >= 768;
+        place.bar = (parseFloat(getComputedStyle(root).getPropertyValue("--bar")) || 0) / scale;
         if (canvas.width !== width || canvas.height !== height) {
             canvas.width = width;
             canvas.height = height;
@@ -490,7 +496,7 @@ export function startSpace(canvas: HTMLCanvasElement) {
         const parallax = [Math.floor(y * 0.03), Math.floor(y * 0.012)] as const;
 
         if (inWorld && !inClose) {
-            const shot = worldShot(w, h);
+            const shot = worldShot(w, h, place.bar, place.wide);
             const world = terraformed(shownTerraform);
             painter.draw({
                 time,
@@ -511,7 +517,7 @@ export function startSpace(canvas: HTMLCanvasElement) {
         }
 
         const hero = heroShot(w, h);
-        const orbital = orbitShot(w, h);
+        const orbital = orbitShot(w, h, place.bar);
         // The pull-back: from the horizon of the menu to the whole planet, as the story begins.
         const pull = inClose ? 0 : still ? (y > place.premiseTop - viewport * 0.5 ? 1 : 0) : smooth(0, place.premiseTop + span * 0.22, y);
         const radius = Math.exp(mix(Math.log(hero.r), Math.log(orbital.r), pull));
@@ -561,7 +567,12 @@ export function startSpace(canvas: HTMLCanvasElement) {
         raf = requestAnimationFrame(tick);
         const target = window.scrollY;
         const moving = Math.abs(target - smoothed) > 0.4;
-        smoothed = still ? target : moving ? smoothed + (target - smoothed) * 0.16 : target;
+        // The sky follows the scroll with some weight of its own, so a fast flick doesn't whip the story past.
+        // Measured in time rather than frames, it feels the same at 60 and 120 Hz.
+        const step = Math.min(now - lastFrame, 50);
+        lastFrame = now;
+        const follow = 1 - Math.exp(-step / 110);
+        smoothed = still ? target : moving ? smoothed + (target - smoothed) * follow : target;
 
         const easing = Math.abs(terraformTarget - shownTerraform) > 0.001;
         shownTerraform = easing ? shownTerraform + (terraformTarget - shownTerraform) * 0.14 : terraformTarget;

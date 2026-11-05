@@ -1,4 +1,5 @@
 use "./scene/space.ts" { startSpace }
+use "lenis" as Lenis
 
 // The page opens in English. Spanish is there for whoever chooses it, and that choice is remembered.
 state lang = "en"
@@ -37,9 +38,14 @@ page Home "/" {
     if wanted != lang {
       showLanguage(wanted)
     }
+    // The scroll drives most of the page (the sky, the story, the bar), so a wheel's jumps are smoothed into one
+    // glide. Lenis also takes the links to sections, landing them below the bar (scroll-padding-top). It steps
+    // aside for reduced motion, and touch keeps the device's own scrolling.
+    let lenis = new Lenis({ autoRaf: true, anchors: true })
     let space = startSpace(sky)
     cleanup {
       space.stop()
+      lenis.destroy()
     }
   }
 
@@ -48,16 +54,19 @@ page Home "/" {
       image "/img/poster.png" alt="" class="sky-poster" width=480 height=300
       canvas ref=sky class="sky"
     }
+    link T.skip to="#contenido" class="skip-link" on:click=(() => document.getElementById("contenido")?.focus({ preventScroll: true }))
     Hero
     TopBar
-    Premise
-    Features
-    Terraform
-    Nebula
-    Status
-    Author
-    Support
-    Faq
+    column tag=main id="contenido" class="page-main" tabindex="-1" {
+      Premise
+      Features
+      Terraform
+      Nebula
+      Status
+      Author
+      Support
+      Faq
+    }
     Footer
   }
 }

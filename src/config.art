@@ -44,6 +44,8 @@ const COPY = {
       { label: "Estado", to: "#estado" },
       { label: "Preguntas", to: "#preguntas" },
     ],
+    navLabel: "Secciones",
+    skip: "Saltar al contenido",
     navSupport: "Patreon",
     shipAlt: "Plano de una nave vista desde arriba: una grilla de módulos de colores, con algunos lugares todavía vacíos",
     decision: {
@@ -226,6 +228,8 @@ const COPY = {
       { label: "Status", to: "#estado" },
       { label: "Questions", to: "#preguntas" },
     ],
+    navLabel: "Sections",
+    skip: "Skip to content",
     navSupport: "Patreon",
     shipAlt: "Plan of a ship seen from above: a grid of coloured modules, with some slots still empty",
     decision: {

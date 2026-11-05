@@ -13,5 +13,8 @@
   "devDependencies": {
     "@artscript/core": "^0.2.19",
     "@happy-dom/global-registrator": "^20.14.5"
+  },
+  "dependencies": {
+    "lenis": "^1.3.27"
   }
 }

@@ -26,6 +26,9 @@ component Hero {
     let key = event.key.toLowerCase()
     let inMenu = menu.contains(document.activeElement)
     let idle = document.activeElement == document.body
+    if !inMenu && !idle {
+      return
+    }
     if key == "w" || key == "arrowup" && inMenu {
       event.preventDefault()
       move(-1)
