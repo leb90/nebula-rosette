@@ -25,6 +25,8 @@
   --a-radius: 0;
 
   --margin: clamp(16px, 2.8vw, 40px);
+  /* The top bar's height. Whatever sticks or is scrolled to sits below it: use top: var(--bar), not top: 0. */
+  --bar: 60px;
   --display: "Pixelify Sans", "Rajdhani", sans-serif;
   --text: "Rajdhani", system-ui, sans-serif;
 
@@ -39,7 +41,7 @@
   --seam: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='32' shape-rendering='crispEdges'><path d='M0 0h4v4h-4zM0 8h4v4h-4zM8 8h4v4h-4zM12 12h4v4h-4zM0 16h4v4h-4zM4 16h4v4h-4zM8 16h4v4h-4zM4 20h4v4h-4zM12 20h4v4h-4zM0 24h4v4h-4zM4 24h4v4h-4zM8 24h4v4h-4zM12 24h4v4h-4zM4 28h4v4h-4zM8 28h4v4h-4zM12 28h4v4h-4z'/></svg>");
 }
 
-html { background: var(--space); scroll-behavior: smooth; scroll-padding-top: 64px; }
+html { background: var(--space); scroll-behavior: smooth; scroll-padding-top: var(--bar); }
 body { background: transparent; color: var(--paper); font: 500 var(--t-body)/1.45 var(--text); margin: 0; overflow-x: clip; -webkit-font-smoothing: antialiased; }
 #app { max-width: none; padding: 0; }
 p { margin: 0; }
@@ -107,15 +109,47 @@ button.menu-item.on, button.menu-item.on:hover { color: #fff; border-color: var(
 @media (hover: none) { .hints { display: none; } }
 
 /* The bar that stays. */
-.topbar { position: sticky; top: 0; z-index: 20; height: 60px; padding: 0 var(--margin); background: var(--space); gap: 24px; }
+/* Out of sight over the first screen. It drops in a few steps, then its contents come up. */
+.topbar {
+  position: fixed !important; top: 0; left: 0; right: 0; z-index: 20; height: var(--bar); padding: 0 var(--margin); background: var(--space); gap: 24px;
+  transform: translateY(calc(-100% - 20px)); transition: transform 0.2s steps(4, end);
+}
+.topbar.docked, .topbar:focus-within { transform: none; transition: transform 0.32s steps(8, end); }
+.topbar > .wordmark, .topbar-links a, .topbar-end > * { opacity: 0; transform: translateY(-10px); transition: opacity 0.1s, transform 0.1s; }
+.topbar.docked > .wordmark, .topbar.docked .topbar-links a, .topbar.docked .topbar-end > *,
+.topbar:focus-within > .wordmark, .topbar:focus-within .topbar-links a, .topbar:focus-within .topbar-end > * {
+  opacity: 1; transform: none; transition: opacity 0.24s steps(3, end) var(--d, 0.34s), transform 0.24s steps(3, end) var(--d, 0.34s);
+}
+.topbar-links a:nth-child(2) { --d: 0.38s; }
+.topbar-links a:nth-child(3) { --d: 0.42s; }
+.topbar-links a:nth-child(4) { --d: 0.46s; }
+.topbar-links a:nth-child(5) { --d: 0.5s; }
+.topbar-end > :first-child { --d: 0.5s; }
+.topbar-end > :last-child { --d: 0.56s; }
+/* How far down the page is, in a cyan line that grows a block at a time. */
+.topbar-progress { position: absolute; left: 0; bottom: 0; width: 100%; height: 4px; background: var(--cyan); transform-origin: left; transform: scaleX(0); z-index: 1; }
+.topbar-progress::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 24px; background: var(--amber); }
+@supports (animation-timeline: scroll()) {
+  .topbar-progress { animation: read-on steps(60, end) both; animation-timeline: scroll(root); }
+}
+@supports not (animation-timeline: scroll()) { .topbar-progress { display: none; } }
+@keyframes read-on { to { transform: scaleX(1); } }
 .wordmark { font: 700 var(--t-body)/1 var(--display); text-transform: uppercase; text-decoration: none; white-space: nowrap; color: var(--paper); }
+.wordmark:hover { color: var(--cyan); }
 .topbar-links { gap: 26px; }
-.topbar-links a { color: var(--paper); text-decoration: none; font-size: var(--t-small); }
-.topbar-links a:hover { color: var(--cyan); }
+.topbar-links a { position: relative; color: var(--paper); text-decoration: none; font-size: var(--t-small); }
+.topbar-links a:hover, .topbar-links a.on { color: var(--cyan); }
+/* The section on screen gets the menu's cursor, one pixel of the art: it travels from link to link in steps.
+   Hovering another link shows a dim one there. The only line in the bar is the reading line. */
+.topbar-links { position: relative; }
+.nav-cursor { position: absolute; left: 0; top: 50%; width: 4px; height: 4px; margin-top: -2px; background: var(--cyan); pointer-events: none; opacity: 0; transform: translateX(calc(var(--x) - 10px)); transition: transform 0.24s steps(6, end), opacity 0.1s steps(1, end); }
+.topbar.docked .nav-cursor.on { opacity: 1; transition: transform 0.24s steps(6, end), opacity 0.1s steps(1, end) 0.5s; }
+.topbar-links a::before { content: ""; position: absolute; left: -10px; top: 50%; width: 4px; height: 4px; margin-top: -2px; background: var(--metal-3); transform: scale(0); transition: transform 0.12s steps(2, end); }
+.topbar-links a:hover:not(.on)::before { transform: none; }
 .topbar-end { gap: 18px; }
 .bar-action { background: var(--amber); color: var(--ink); padding: 7px 14px; text-decoration: none; font-size: var(--t-small); white-space: nowrap; line-height: 1.1; }
 .bar-action:hover { background: var(--paper); }
-.bar-action:active { transform: translateY(2px); }
+.bar-action:active, .topbar.docked .topbar-end > .bar-action:active { transform: translateY(2px); }
 @media (max-width: 1020px) { .topbar-links { display: none; } }
 
 .lang { gap: 2px; }
@@ -132,7 +166,7 @@ button.menu-item.on, button.menu-item.on:hover { color: #fff; border-color: var(
 .premise-lines { gap: 24px; max-width: 33%; min-width: min(520px, 100%); }
 .premise-line { font-size: var(--t-statement); line-height: 1.16; }
 .scenes .premise { height: 340svh; }
-.scenes .premise-stage { position: sticky; top: 0; height: 100svh; min-height: 0; overflow: hidden; }
+.scenes .premise-stage { position: sticky; top: var(--bar); height: calc(100svh - var(--bar)); min-height: 0; overflow: hidden; }
 .scenes .premise-lines { position: relative; flex: 1; }
 /* The lines not on screen stay readable for a screen reader, the way a visually hidden text does. */
 .scenes .premise-line { position: absolute; left: 0; top: 0; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
@@ -264,7 +298,7 @@ a.band:hover, a.band:focus-visible { background: var(--ink); color: var(--amber)
 
 /* Questions. */
 .faq { position: relative; background: var(--metal-1); padding: clamp(56px, 8vw, 120px) var(--margin) clamp(64px, 9vw, 130px); display: grid !important; grid-template-columns: repeat(12, 1fr); column-gap: 16px; row-gap: 28px; align-items: start; }
-.faq-title { grid-column: 1 / 5; position: sticky; top: 96px; font-size: var(--t-title); }
+.faq-title { grid-column: 1 / 5; position: sticky; top: calc(var(--bar) + 36px); font-size: var(--t-title); }
 .faq-list { grid-column: 5 / 13; gap: 8px; }
 .faq-item { display: block !important; background: var(--metal-2); }
 .faq-item summary { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 72px; padding: 14px clamp(16px, 2vw, 28px); font-size: var(--t-lead); line-height: 1.2; cursor: pointer; list-style: none; }
@@ -300,11 +334,15 @@ a.band:hover, a.band:focus-visible { background: var(--ink); color: var(--amber)
   @keyframes rise-mask { from { transform: translateY(100%); clip-path: inset(0 0 100% 0); } to { transform: none; clip-path: inset(0 0 -8% 0); } }
   @keyframes draw-bar { from { transform: scaleX(0); } to { transform: none; } }
 }
-@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .topbar, .topbar *, .topbar-links a::before { transition: none !important; }
+}
 
 /* The phone is its own composition. */
 @media (max-width: 767px) {
-  .topbar { height: 54px; gap: 8px; }
+  :root { --bar: 54px; }
+  .topbar { gap: 8px; }
   .wordmark { font-size: 16px; }
   .topbar-end { gap: 6px; }
   .bar-action { padding: 6px 9px; }

@@ -1,11 +1,71 @@
-// A plain bar that stays once the first screen has gone.
+// The bar arrives when the first screen has gone (that screen is already a menu, with its own languages) and leaves
+// if the visitor goes back to it. It drops in, then its contents come up.
 component TopBar {
-  row tag=header class="topbar" align=center justify=between {
-    link "Rosette Nebula" to="#inicio" class="wordmark"
-    row tag=nav class="topbar-links" align=center aria-label="Rosette Nebula" {
-      for item in T.nav key item.to {
-        link item.label to=item.to
+  state docked = false
+  state current = ""
+  state cursorX = null
+  ref links
+
+  // The menu's cursor travels to the link of the section on screen. Labels change width with the language and
+  // the font, so it is measured again then.
+  fn placeCursor() {
+    let link = links?.querySelector(`a[href="${current}"]`)
+    cursorX = link ? link.offsetLeft : null
+  }
+
+  effect {
+    let watched = [current, lang]
+    if inBrowser() {
+      requestAnimationFrame(placeCursor)
+    }
+  }
+
+  mount {
+    if !inBrowser() {
+      return
+    }
+    let hero = document.getElementById("inicio")
+    let onScroll = () => {
+      let bar = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--bar")) || 60
+      docked = (hero?.getBoundingClientRect().bottom ?? 0) <= bar
+    }
+
+    let watch = new IntersectionObserver(entries => {
+      for entry in entries {
+        if entry.isIntersecting {
+          current = `#${entry.target.id}`
+        }
       }
+    }, { rootMargin: "-45% 0px -50% 0px" })
+    for item in T.nav {
+      let section = document.getElementById(item.to.slice(1))
+      if section {
+        watch.observe(section)
+      }
+    }
+
+    window.addEventListener("scroll", onScroll, { passive: true })
+    let onResize = () => {
+      onScroll()
+      placeCursor()
+    }
+    window.addEventListener("resize", onResize)
+    document.fonts?.ready.then(placeCursor)
+    onScroll()
+    cleanup {
+      window.removeEventListener("scroll", onScroll)
+      window.removeEventListener("resize", onResize)
+      watch.disconnect()
+    }
+  }
+
+  row tag=header class=(docked ? "topbar docked" : "topbar") align=center justify=between {
+    link "Rosette Nebula" to="#inicio" class="wordmark"
+    row tag=nav ref=links class="topbar-links" align=center aria-label="Rosette Nebula" {
+      for item in T.nav key item.to {
+        link item.label to=item.to class=(item.to == current ? "on" : "") aria-current=(item.to == current ? "true" : null)
+      }
+      column class=(cursorX == null ? "nav-cursor" : "nav-cursor on") style=`--x:${cursorX ?? 0}px` aria-hidden="true"
     }
     row class="topbar-end" align=center {
       if PATREON_URL != "" {
@@ -15,5 +75,6 @@ component TopBar {
       }
       LanguageSwitch
     }
+    column class="topbar-progress" aria-hidden="true"
   }
 }
