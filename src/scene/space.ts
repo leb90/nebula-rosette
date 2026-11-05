@@ -398,8 +398,9 @@ const heroShot = (w: number, h: number) =>
 const orbitShot = (w: number, h: number, bar = 0) =>
     w >= h ? { x: w * 0.68, y: bar + (h - bar) * 0.54, r: h * 0.3 } : { x: w * 0.56, y: bar + (h - bar) * 0.68, r: w * 0.3 };
 
-const worldShot = (w: number, h: number, bar = 0) =>
-    w >= h ? { x: w * 0.75, y: bar + (h - bar) * 0.5, r: Math.min(h * 0.4, w * 0.21) } : { x: w * 0.5, y: bar + (h - bar) * 0.43, r: w * 0.4 };
+// `wide`: the page's own two-column layout, which keeps its copy on the left even on a tall tablet.
+const worldShot = (w: number, h: number, bar = 0, wide = false) =>
+    wide || w >= h ? { x: w * 0.75, y: bar + (h - bar) * 0.5, r: Math.min(h * 0.4, w * 0.21) } : { x: w * 0.5, y: bar + (h - bar) * 0.43, r: w * 0.34 };
 
 function orbit(center: { x: number; y: number; r: number }, angle: number, size: number, ratio: number, slant: number) {
     const ax = Math.cos(angle) * center.r * size;
@@ -439,7 +440,7 @@ export function startSpace(canvas: HTMLCanvasElement) {
 
     const sections = { hero: document.getElementById("inicio"), premise: document.getElementById("historia"), world: document.getElementById("terraformar"), close: document.getElementById("cierre") };
     const lines = [...document.querySelectorAll<HTMLElement>(".premise-line")];
-    const place = { heroTop: 0, premiseTop: 0, premiseBottom: 0, worldTop: 0, worldBottom: 0, closeTop: 0, viewport: 1, bar: 0 };
+    const place = { heroTop: 0, premiseTop: 0, premiseBottom: 0, worldTop: 0, worldBottom: 0, closeTop: 0, viewport: 1, bar: 0, wide: false };
 
     const measure = () => {
         const y = window.scrollY;
@@ -460,6 +461,7 @@ export function startSpace(canvas: HTMLCanvasElement) {
         const scale = Math.max(2, Math.round(cssWidth / 480)) + quality;
         const width = Math.ceil(cssWidth / scale);
         const height = Math.ceil(Math.max(cssHeight, window.innerHeight) / scale);
+        place.wide = cssWidth >= 768;
         place.bar = (parseFloat(getComputedStyle(root).getPropertyValue("--bar")) || 0) / scale;
         if (canvas.width !== width || canvas.height !== height) {
             canvas.width = width;
@@ -494,7 +496,7 @@ export function startSpace(canvas: HTMLCanvasElement) {
         const parallax = [Math.floor(y * 0.03), Math.floor(y * 0.012)] as const;
 
         if (inWorld && !inClose) {
-            const shot = worldShot(w, h, place.bar);
+            const shot = worldShot(w, h, place.bar, place.wide);
             const world = terraformed(shownTerraform);
             painter.draw({
                 time,

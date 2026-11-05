@@ -39,7 +39,7 @@ component Footer {
           cancelAnimationFrame(frame)
           frame = 0
           target = null
-          badge.style.setProperty("--rim-delay", `${-((((shown + 45) % 360) + 360) % 360) / 360 * RIM_SECONDS}s`)
+          badge.style.setProperty("--rim-delay", `${-(((shown + 45) % 360 + 360) % 360) / 360 * RIM_SECONDS}s`)
           badge.style.removeProperty("--spot")
           badge.style.removeProperty("--near")
           aimed = false

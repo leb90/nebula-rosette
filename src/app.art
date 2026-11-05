@@ -54,16 +54,19 @@ page Home "/" {
       image "/img/poster.png" alt="" class="sky-poster" width=480 height=300
       canvas ref=sky class="sky"
     }
+    link T.skip to="#contenido" class="skip-link" on:click=(() => document.getElementById("contenido")?.focus({ preventScroll: true }))
     Hero
     TopBar
-    Premise
-    Features
-    Terraform
-    Nebula
-    Status
-    Author
-    Support
-    Faq
+    column tag=main id="contenido" class="page-main" tabindex="-1" {
+      Premise
+      Features
+      Terraform
+      Nebula
+      Status
+      Author
+      Support
+      Faq
+    }
     Footer
   }
 }
