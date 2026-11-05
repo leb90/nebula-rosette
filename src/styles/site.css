@@ -317,10 +317,34 @@ a.band:hover, a.band:focus-visible { background: var(--ink); color: var(--amber)
 .close-credits a:hover, .close-top:hover { color: var(--cyan); }
 .close-name { position: absolute; left: var(--margin); top: 36svh; font: 700 calc((100vw - 2 * var(--margin)) / 8.3)/0.9 var(--display); letter-spacing: -0.02em; text-transform: uppercase; color: var(--paper); white-space: nowrap; }
 .made { margin-top: auto; }
-.made-link { display: flex; align-items: center; gap: 10px; background: var(--space); color: var(--paper); padding: 10px 18px 10px 12px; font-size: var(--t-lead); line-height: 1; text-decoration: none; border: 3px solid var(--cyan); }
-.made-link img { width: 28px; height: 28px; image-rendering: auto; }
-.made-link:hover { background: var(--cyan); color: var(--ink); }
+/* The badge's edge catches the light (aimed by Footer): a dim ring with a white highlight and a fainter one across,
+   in hard stops like the art, while the motion itself is smooth. At rest the light goes round; near the pointer the
+   highlight grows (--near). The mark is pixel art like the page and resolves into ArtScript's own on hover,
+   tilting as it does on artscript.dev. */
+@property --spot { syntax: "<angle>"; inherits: true; initial-value: -45deg; }
+@property --near { syntax: "<number>"; inherits: true; initial-value: 0; }
+.made-link { position: relative; display: flex; align-items: center; gap: 10px; background: var(--space); color: var(--paper); padding: 10px 18px 10px 12px; font-size: var(--t-lead); line-height: 1; text-decoration: none; border: 3px solid var(--metal-2); transition: background 0.2s steps(2, end); }
+.made-link::before {
+  --w: calc(16deg + 18deg * var(--near));
+  content: ""; position: absolute; inset: -3px; padding: 3px; pointer-events: none;
+  background: conic-gradient(from calc(var(--spot) - var(--w)),
+    var(--cyan) 0 4deg, var(--paper) 4deg calc(2 * var(--w) - 4deg), var(--cyan) calc(2 * var(--w) - 4deg) calc(2 * var(--w)),
+    transparent calc(2 * var(--w)) calc(164deg + var(--w)), var(--metal-3) calc(164deg + var(--w)) calc(196deg + var(--w)), transparent calc(196deg + var(--w)));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  animation: rim 8s linear infinite; animation-delay: var(--rim-delay, 0s); transition: --near 0.5s ease-out;
+}
+.made-link.aimed::before { animation: none; transition: none; }
+@keyframes rim { from { --spot: -45deg; } to { --spot: 315deg; } }
+.made-link:hover, .made-link:focus-visible { background: var(--metal-0); }
 .made-link:active { transform: translateY(2px); }
+.made-mark { position: relative; width: 28px; height: 28px; flex: none; transition: transform 0.3s steps(4, end); }
+.made-mark img { position: absolute; inset: 0; width: 28px; height: 28px; transition: opacity 0.3s steps(4, end); }
+.made-mark .made-pixel { image-rendering: pixelated; }
+.made-mark .made-smooth { image-rendering: auto; opacity: 0; }
+.made-link:hover .made-mark, .made-link:focus-visible .made-mark { transform: rotate(-8deg) scale(1.08); }
+.made-link:hover .made-pixel, .made-link:focus-visible .made-pixel { opacity: 0; }
+.made-link:hover .made-smooth, .made-link:focus-visible .made-smooth { opacity: 1; }
 
 /* Motion moves in steps here, like the art. */
 .a-reveal { transition-timing-function: steps(7, end); transition-duration: 0.5s; }
@@ -336,6 +360,8 @@ a.band:hover, a.band:focus-visible { background: var(--ink); color: var(--amber)
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .topbar, .topbar *, .topbar-links a::before { transition: none !important; }
+  .made-mark, .made-mark img { transition: none; }
+  .made-link::before { animation: none; }
 }
 
 /* The phone is its own composition. */

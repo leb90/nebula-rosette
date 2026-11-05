@@ -1,5 +1,71 @@
 // The close: back to the first frame, one whole orbit later. The last thing on the page says what it is made with.
 component Footer {
+  // The badge's edge catches the light, as on React Bits' specular button but in pixels: at rest a highlight goes
+  // round the border; when the pointer comes near it glides to face it and grows, and when the pointer leaves it
+  // goes on round from where it was. The glide is written straight to the badge's style, frame by frame.
+  state aimed = false
+  ref badge
+
+  mount {
+    if !inBrowser() || matchMedia("(prefers-reduced-motion: reduce)").matches {
+      return
+    }
+    let RIM_SECONDS = 8
+    let shown = 0
+    let target = null
+    let glow = 0
+    let glowTarget = 0
+    let frame = 0
+
+    let tick = () => {
+      frame = 0
+      shown += (target - shown) * 0.16
+      glow += (glowTarget - glow) * 0.16
+      badge.style.setProperty("--spot", `${shown.toFixed(1)}deg`)
+      badge.style.setProperty("--near", glow.toFixed(3))
+      if Math.abs(target - shown) > 0.2 || Math.abs(glowTarget - glow) > 0.005 {
+        frame = requestAnimationFrame(tick)
+      }
+    }
+
+    let onMove = event => {
+      let box = badge.getBoundingClientRect()
+      let dx = event.clientX - (box.left + box.width / 2)
+      let dy = event.clientY - (box.top + box.height / 2)
+      let away = Math.hypot(Math.max(0, Math.abs(dx) - box.width / 2), Math.max(0, Math.abs(dy) - box.height / 2))
+      if away > 140 {
+        if target != null {
+          // Pick the orbit up where the light is: a negative delay starts the animation part way round.
+          cancelAnimationFrame(frame)
+          frame = 0
+          target = null
+          badge.style.setProperty("--rim-delay", `${-((((shown + 45) % 360) + 360) % 360) / 360 * RIM_SECONDS}s`)
+          badge.style.removeProperty("--spot")
+          badge.style.removeProperty("--near")
+          aimed = false
+        }
+        return
+      }
+      if target == null {
+        shown = parseFloat(getComputedStyle(badge, "::before").getPropertyValue("--spot")) || -45
+        glow = 0
+        aimed = true
+      }
+      // The conic gradient counts from the top, clockwise; the light turns the short way round.
+      let angle = Math.atan2(dy, dx) * 180 / Math.PI + 90
+      target = shown + ((angle - shown + 540) % 360 - 180)
+      glowTarget = 1 - away / 140
+      if !frame {
+        frame = requestAnimationFrame(tick)
+      }
+    }
+    window.addEventListener("pointermove", onMove, { passive: true })
+    cleanup {
+      window.removeEventListener("pointermove", onMove)
+      cancelAnimationFrame(frame)
+    }
+  }
+
   column tag=footer id="cierre" class="close" {
     row class="close-notes" justify=between wrap {
       column class="close-credits" {
@@ -11,8 +77,11 @@ component Footer {
     }
     text "Rosette Nebula" tag=p class="close-name"
     row class="made" justify=center {
-      link href=ARTSCRIPT_URL target="_blank" class="made-link" {
-        image "/img/artscript.png" alt="" width=28 height=28 loading="lazy"
+      link href=ARTSCRIPT_URL target="_blank" ref=badge class=(aimed ? "made-link aimed" : "made-link") {
+        row class="made-mark" aria-hidden="true" {
+          image "/img/artscript-pixel.png" alt="" class="made-pixel" width=28 height=28 loading="lazy"
+          image "/img/artscript-smooth.png" alt="" class="made-smooth" width=28 height=28 loading="lazy"
+        }
         text T.footer.made
       }
     }
