@@ -20,7 +20,7 @@ fn pickLanguage(next) {
 }
 
 page Home "/" {
-  meta title=COPY.en.meta.title description=COPY.en.meta.description image="/og.png" imageAlt=COPY.en.planetAlt siteName="Rosette Nebula" locale="en_US" themeColor="#06050c" lang="en" theme="dark" jsonld={ "@type": "VideoGame", name: "Rosette Nebula", description: COPY.en.meta.description, genre: ["Role-playing", "Science fiction"], gamePlatform: ["macOS", "Windows"], numberOfPlayers: { "@type": "QuantitativeValue", value: 1 }, author: { "@type": "Person", name: AUTHOR }, inLanguage: ["es", "en"] }
+  meta title=COPY.en.meta.title description=COPY.en.meta.description image="/og.png" imageAlt=COPY.en.planetAlt siteName="Nebula Rosette" locale="en_US" themeColor="#06050c" lang="en" theme="dark" jsonld={ "@type": "VideoGame", name: "Nebula Rosette", description: COPY.en.meta.description, genre: ["Role-playing", "Science fiction"], gamePlatform: ["macOS", "Windows"], numberOfPlayers: { "@type": "QuantitativeValue", value: 1 }, author: { "@type": "Person", name: AUTHOR }, inLanguage: ["es", "en"] }
 
   ref sky
 

@@ -75,7 +75,7 @@ component Footer {
       }
       link T.footer.top to="#inicio" class="close-top"
     }
-    text "Rosette Nebula" tag=p class="close-name"
+    image "/img/logo-line.webp" alt="Nebula Rosette" class="close-logo" width=1960 height=175 loading="lazy"
     row class="made" justify=center {
       link href=ARTSCRIPT_URL target="_blank" ref=badge class=(aimed ? "made-link aimed" : "made-link") {
         row class="made-mark" aria-hidden="true" {

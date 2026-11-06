@@ -24,8 +24,6 @@ const JOBS = [
     { file: "img/world-3.png", kind: "world", t: 0.75, w: 72, h: 72 },
     { file: "img/world-4.png", kind: "world", t: 1, w: 72, h: 72 },
     { file: "img/moon.png", kind: "moon", w: 160, h: 160 },
-    { file: "favicon.png", kind: "icon", w: 48, h: 48 },
-    { file: "apple-touch-icon.png", kind: "icon", w: 90, h: 90, grow: 2 },
 ];
 
 const bundle = await build({ entryPoints: [join(root, "src/scene/space.ts")], bundle: true, format: "iife", globalName: "Space", write: false, logLevel: "silent" });

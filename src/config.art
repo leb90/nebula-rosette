@@ -1,7 +1,7 @@
 // What people change lives here: the Patreon address, the version and every text of the page in both languages.
 
-// Paste the campaign's address here when it opens. While it is empty the page says the Patreon opens soon.
-const PATREON_URL = ""
+// The campaign's address. Left empty, the page says the Patreon opens soon and its buttons are not links.
+const PATREON_URL = "https://www.patreon.com/c/rosettenebula"
 const ARTSCRIPT_URL = "https://artscript.dev"
 const VERSION = "0.1.0"
 const AUTHOR = "Leandro Bisceglie"
@@ -18,7 +18,7 @@ fn inBrowser() {
 const COPY = {
   es: {
     meta: {
-      title: "Rosette Nebula: RPG espacial en pixel art",
+      title: "Nebula Rosette: RPG espacial en pixel art",
       description: "Un RPG espacial de ciencia ficción dura, para un jugador y en pixel art. Una flota, pocas naves y mundos por revivir. En desarrollo para macOS y Windows.",
     },
     planetAlt: "Un planeta oceánico con dos lunas sobre la Nebulosa Roseta, en pixel art",
@@ -165,14 +165,14 @@ const COPY = {
     },
     author: {
       title: "Lo hace una persona",
-      who: "Soy Leandro Bisceglie y hago Rosette Nebula solo. Para unas 18 horas de juego hacen falta del orden de 60 a 90 mapas, 80 personajes con diálogo y 50 o 60 misiones. El cuello de botella no es el código: es el arte y el contenido.",
+      who: "Soy Leandro Bisceglie y hago Nebula Rosette solo. Para unas 18 horas de juego hacen falta del orden de 60 a 90 mapas, 80 personajes con diálogo y 50 o 60 misiones. El cuello de botella no es el código: es el arte y el contenido.",
       pays: "Tu apoyo paga lo que no puedo hacer solo: arte de planetas (terrenos, vegetación y cielos), personajes y retratos, música y sonido propios.",
     },
     support: {
       live: "Apoyar",
-      liveLine: "Apoyá Rosette Nebula en Patreon.",
+      liveLine: "Apoyá Nebula Rosette en Patreon.",
       soon: "Pronto",
-      soonLine: "El Patreon de Rosette Nebula abre pronto.",
+      soonLine: "El Patreon de Nebula Rosette abre pronto.",
     },
     faq: {
       title: "Preguntas",
@@ -194,7 +194,7 @@ const COPY = {
     },
     footer: {
       by: "Un juego de Leandro Bisceglie",
-      fonts: "Tipografías: Pixelify Sans y Rajdhani (SIL OFL)",
+      fonts: "Tipografías: Michroma, Pixelify Sans y Rajdhani (SIL OFL)",
       photo: "Foto de la nebulosa: Dylan O'Donnell (CC0)",
       top: "Volver arriba",
       made: "Hecho en ArtScript",
@@ -202,7 +202,7 @@ const COPY = {
   },
   en: {
     meta: {
-      title: "Rosette Nebula: a pixel art space RPG",
+      title: "Nebula Rosette: a pixel art space RPG",
       description: "A hard sci-fi space RPG for one player, in pixel art. One fleet, few ships and dead worlds to bring back. In development for macOS and Windows.",
     },
     planetAlt: "An ocean planet with two moons over the Rosette Nebula, in pixel art",
@@ -345,14 +345,14 @@ const COPY = {
     },
     author: {
       title: "One person makes this",
-      who: "I'm Leandro Bisceglie and I'm making Rosette Nebula alone. Around 18 hours of play takes on the order of 60 to 90 maps, 80 characters with dialogue and 50 or 60 missions. The bottleneck isn't the code: it's art and content.",
+      who: "I'm Leandro Bisceglie and I'm making Nebula Rosette alone. Around 18 hours of play takes on the order of 60 to 90 maps, 80 characters with dialogue and 50 or 60 missions. The bottleneck isn't the code: it's art and content.",
       pays: "Your support pays for what I can't do alone: planet art (terrain, vegetation and skies), characters and portraits, original music and sound.",
     },
     support: {
       live: "Support",
-      liveLine: "Back Rosette Nebula on Patreon.",
+      liveLine: "Back Nebula Rosette on Patreon.",
       soon: "Soon",
-      soonLine: "The Rosette Nebula Patreon opens soon.",
+      soonLine: "The Nebula Rosette Patreon opens soon.",
     },
     faq: {
       title: "Questions",
@@ -374,7 +374,7 @@ const COPY = {
     },
     footer: {
       by: "A game by Leandro Bisceglie",
-      fonts: "Typefaces: Pixelify Sans and Rajdhani (SIL OFL)",
+      fonts: "Typefaces: Michroma, Pixelify Sans and Rajdhani (SIL OFL)",
       photo: "Nebula photo: Dylan O'Donnell (CC0)",
       top: "Back to top",
       made: "Made with ArtScript",

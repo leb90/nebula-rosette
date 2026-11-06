@@ -1,4 +1,5 @@
 @font-face { font-family: "Pixelify Sans"; src: url(fonts/PixelifySans.woff2) format("woff2"); font-weight: 400 700; font-display: swap; }
+@font-face { font-family: "Michroma"; src: url(fonts/Michroma.woff2) format("woff2"); font-weight: 400; font-display: swap; }
 @font-face { font-family: "Rajdhani"; src: url(fonts/Rajdhani-Medium.woff2) format("woff2"); font-weight: 500; font-display: swap; }
 
 :root {
@@ -27,12 +28,17 @@
   --margin: clamp(16px, 2.8vw, 40px);
   /* The top bar's height. Whatever sticks or is scrolled to sits below it: use top: var(--bar), not top: 0. */
   --bar: 60px;
+  /* Pixel letters for the interface (keys, buttons, labels), as in the game; the titles in the logo's letters. */
   --display: "Pixelify Sans", "Rajdhani", sans-serif;
+  --heading: "Michroma", "Rajdhani", sans-serif;
   --text: "Rajdhani", system-ui, sans-serif;
 
   --t-hero: clamp(72px, min(15vw, 24svh), 230px);
   --t-display: clamp(50px, 8.6vw, 150px);
   --t-title: clamp(44px, 5.2vw, 88px);
+  /* Michroma is wide (a capital takes about 1em), so the titles are set smaller than the pixel ones were. */
+  --t-head: clamp(30px, 5.1vw, 88px);
+  --t-head-2: clamp(26px, 3.1vw, 52px);
   --t-statement: clamp(24px, 2.5vw, 36px);
   --t-lead: clamp(21px, 1.7vw, 24px);
   --t-body: clamp(19px, 1.5vw, 22px);
@@ -64,11 +70,12 @@ img, canvas { image-rendering: pixelated; }
 .skip-link:focus-visible { translate: none; outline: 3px solid var(--cyan); }
 
 .display {
-  font-family: var(--display);
-  font-weight: 700;
-  font-size: var(--t-display);
-  line-height: 0.92;
-  letter-spacing: -0.02em;
+  font-family: var(--heading);
+  font-weight: 400;
+  font-synthesis: none;
+  font-size: var(--t-head);
+  line-height: 1.06;
+  letter-spacing: 0;
   text-transform: uppercase;
   margin: 0;
   text-wrap: balance;
@@ -84,16 +91,9 @@ img, canvas { image-rendering: pixelated; }
 .hero { position: relative; min-height: 100svh; padding: clamp(56px, 9svh, 96px) var(--margin) 28px; justify-content: space-between; gap: 24px; }
 .hero > .lang { position: absolute; top: 18px; right: var(--margin); }
 .hero-main { gap: 0; align-items: flex-start; }
-.hero-name {
-  font-family: var(--display);
-  font-weight: 700;
-  font-size: var(--t-hero);
-  line-height: 0.84;
-  letter-spacing: -0.02em;
-  text-transform: uppercase;
-  margin: 0;
-  color: var(--paper);
-}
+.hero-name { margin: 0; line-height: 0; }
+/* The game's logo. Its letters start a little in from its edge, where the glow is. */
+.hero-logo { display: block; width: min(100%, calc(4.34 * var(--t-hero))); height: auto; margin-left: -1.2%; image-rendering: auto; }
 .mask { display: block; font: inherit; }
 .pixel-bar { position: relative; height: 6px; width: min(100%, calc(4.34 * var(--t-hero))); background: var(--cyan); margin: clamp(14px, 2.2svh, 24px) 0 clamp(14px, 2.2svh, 22px); transform-origin: left; }
 .pixel-bar::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 6%; background: var(--amber); }
@@ -143,7 +143,7 @@ button.menu-item.on, button.menu-item.on:hover { color: #fff; border-color: var(
 }
 @supports not (animation-timeline: scroll()) { .topbar-progress { display: none; } }
 @keyframes read-on { to { transform: scaleX(1); } }
-.wordmark { font: 700 var(--t-body)/1 var(--display); text-transform: uppercase; text-decoration: none; white-space: nowrap; color: var(--paper); }
+.wordmark { font: 400 15px/1 var(--heading); letter-spacing: 0.04em; text-transform: uppercase; text-decoration: none; white-space: nowrap; color: var(--paper); }
 .wordmark:hover { color: var(--cyan); }
 .topbar-links { gap: 26px; }
 .topbar-links a { position: relative; color: var(--paper); text-decoration: none; font-size: var(--t-small); }
@@ -171,7 +171,7 @@ button.menu-item.on, button.menu-item.on:hover { color: #fff; border-color: var(
 /* The story: without scenes, three lines one under the other. With them, the scroll holds the stage. */
 .premise { position: relative; }
 .premise-stage { padding: clamp(40px, 14svh, 130px) var(--margin) 48px; gap: clamp(24px, 5svh, 56px); min-height: 100svh; }
-.premise-title { font-size: var(--t-title); max-width: 8.5em; }
+.premise-title { font-size: var(--t-head-2); max-width: 14em; }
 .premise-lines { gap: 24px; max-width: 33%; min-width: min(520px, 100%); }
 .premise-line { font-size: var(--t-statement); line-height: 1.16; }
 .scenes .premise { height: 340svh; }
@@ -235,7 +235,7 @@ button.menu-item.on, button.menu-item.on:hover { color: #fff; border-color: var(
 .world-copy, .world-control { grid-column: 1 / 4; background: var(--metal-0); position: relative; padding: clamp(18px, 2.4vw, 36px); }
 .world-copy { grid-row: 1 / 3; gap: 20px; }
 .world-control { grid-row: 3 / 5; gap: 10px; justify-content: flex-end; }
-.world-title { font-size: var(--t-title); }
+.world-title { font-size: var(--t-head-2); }
 .world-body { max-width: 30em; font-size: var(--t-lead); line-height: 1.32; }
 .world-stage { font: 700 var(--t-statement)/1 var(--display); text-transform: uppercase; margin: 0; color: var(--cyan); }
 .world-text { min-height: 2.7em; font-size: var(--t-lead); line-height: 1.25; }
@@ -282,7 +282,7 @@ input.world-slider:active { cursor: grabbing; }
 .tile:nth-child(n+5) .tile-mark { color: var(--amber); }
 .tile-text { font-size: var(--t-body); line-height: 1.22; }
 .left { display: grid !important; grid-template-columns: repeat(12, 1fr); column-gap: 16px; row-gap: 24px; margin-top: clamp(28px, 5vw, 72px); }
-.left-title { grid-column: 1 / 7; font-size: var(--t-title); }
+.left-title { grid-column: 1 / 7; font-size: var(--t-head-2); }
 .left-list { grid-column: 7 / 13; list-style: none; margin: 0; padding: 0; gap: 10px; }
 .left-list li { display: flex; align-items: center; gap: 14px; font-size: var(--t-statement); line-height: 1.15; }
 .left-list li::before { content: ""; flex: none; width: 16px; height: 16px; border: 3px solid var(--metal-3); box-sizing: border-box; }
@@ -294,7 +294,7 @@ input.world-slider:active { cursor: grabbing; }
   display: grid !important; grid-template-columns: 1fr 1fr; column-gap: clamp(24px, 4vw, 64px);
 }
 .author-start { gap: 0; position: relative; z-index: 1; }
-.author-title { font-size: var(--t-title); }
+.author-title { font-size: var(--t-head-2); }
 .author-moon { position: absolute; left: 4%; bottom: -26%; width: min(44vw, 640px, 55svh); height: auto; }
 .author-end { gap: 20px; justify-content: flex-end; font-size: var(--t-lead); line-height: 1.32; position: relative; max-width: 31em; }
 
@@ -302,12 +302,12 @@ input.world-slider:active { cursor: grabbing; }
 .support { position: relative; background: var(--amber); color: var(--ink); }
 .band { min-height: 62svh; padding: 28px var(--margin) 22px; display: flex; flex-direction: column; justify-content: space-between; gap: 24px; color: var(--ink); text-decoration: none; }
 .band-line { font-size: var(--t-statement); line-height: 1.16; }
-.band-word { font: 700 min(calc((100vw - 2 * var(--margin)) / (var(--n, 6) * 0.6)), 32vw)/0.8 var(--display); letter-spacing: -0.02em; text-transform: uppercase; margin: 0; color: inherit; white-space: nowrap; }
+.band-word { font: 400 min(calc((100vw - 2 * var(--margin)) / (var(--n, 6) * 1.04)), 32vw)/0.9 var(--heading); letter-spacing: 0; text-transform: uppercase; margin: 0; padding-bottom: 0.1em; color: inherit; white-space: nowrap; }
 a.band:hover, a.band:focus-visible { background: var(--ink); color: var(--amber); }
 
 /* Questions. */
 .faq { position: relative; background: var(--metal-1); padding: clamp(56px, 8vw, 120px) var(--margin) clamp(64px, 9vw, 130px); display: grid !important; grid-template-columns: repeat(12, 1fr); column-gap: 16px; row-gap: 28px; align-items: start; }
-.faq-title { grid-column: 1 / 5; position: sticky; top: calc(var(--bar) + 36px); font-size: var(--t-title); }
+.faq-title { grid-column: 1 / 5; position: sticky; top: calc(var(--bar) + 36px); font-size: var(--t-head-2); }
 .faq-list { grid-column: 5 / 13; gap: 8px; }
 .faq-item { display: block !important; background: var(--metal-2); }
 .faq-item summary { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 72px; padding: 14px clamp(16px, 2vw, 28px); font-size: var(--t-lead); line-height: 1.2; cursor: pointer; list-style: none; }
@@ -325,7 +325,7 @@ a.band:hover, a.band:focus-visible { background: var(--ink); color: var(--amber)
 .close-credits { gap: 2px; font-size: var(--t-small); line-height: 1.3; }
 .close-credits a, .close-top { color: var(--paper); font-size: var(--t-small); }
 .close-credits a:hover, .close-top:hover { color: var(--cyan); }
-.close-name { position: absolute; left: var(--margin); top: max(36svh, calc(var(--bar) + 124px)); font: 700 calc((100vw - 2 * var(--margin)) / 8.3)/0.9 var(--display); letter-spacing: -0.02em; text-transform: uppercase; color: var(--paper); white-space: nowrap; }
+.close-logo { position: absolute; left: var(--margin); top: max(36svh, calc(var(--bar) + 124px)); width: calc(100% - 2 * var(--margin)); height: auto; image-rendering: auto; }
 .made { margin-top: auto; }
 /* The badge's edge catches the light (aimed by Footer): a dim ring with a white highlight and a fainter one across,
    in hard stops like the art, while the motion itself is smooth. At rest the light goes round; near the pointer the
@@ -382,7 +382,7 @@ a.band:hover, a.band:focus-visible { background: var(--ink); color: var(--amber)
   .menu-item { min-height: 42px; }
   .world { grid-template-rows: repeat(4, auto); }
   .world-copy, .world-control { padding: 16px clamp(18px, 2.4vw, 36px); }
-  .world-title { font-size: min(var(--t-title), 8svh); }
+  .world-title { font-size: min(var(--t-head-2), 5.4svh); }
   .stop-button img { width: clamp(40px, 8svh, 72px); }
 }
 
@@ -390,7 +390,7 @@ a.band:hover, a.band:focus-visible { background: var(--ink); color: var(--amber)
 @media (max-width: 767px) {
   :root { --bar: 54px; }
   .topbar { gap: 8px; }
-  .wordmark { font-size: 16px; }
+  .wordmark { font-size: 12px; letter-spacing: 0.02em; }
   .topbar-end { gap: 6px; }
   .bar-action { padding: 6px 9px; min-height: 40px; box-sizing: border-box; display: inline-flex; align-items: center; }
   .lang button { padding: 6px; min-width: 40px; min-height: 40px; box-sizing: border-box; display: inline-grid; place-items: center; }
@@ -398,7 +398,7 @@ a.band:hover, a.band:focus-visible { background: var(--ink); color: var(--amber)
   .close-top, .nebula-caption a { display: inline-block; padding-block: 10px; }
   .hero { padding-top: 15svh; }
   .hero > .lang { left: var(--margin); right: auto; }
-  :root { --t-hero: min(21.5vw, 24svh); --t-display: min(13vw, 17svh); --t-title: min(12.4vw, 15svh); }
+  :root { --t-hero: min(21.5vw, 24svh); --t-display: min(13vw, 17svh); --t-title: min(12.4vw, 15svh); --t-head: min(7.7vw, 10svh); --t-head-2: min(7.3vw, 9.5svh); }
   .pixel-bar { width: 100%; }
   .premise-stage { padding-top: 34px; }
   .premise-lines { max-width: none; min-width: 0; }

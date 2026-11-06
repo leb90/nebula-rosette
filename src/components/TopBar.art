@@ -63,7 +63,7 @@ component TopBar {
   }
 
   row tag=header class=(docked ? "topbar docked" : "topbar") align=center justify=between {
-    link "Rosette Nebula" to="#inicio" class="wordmark"
+    link "Nebula Rosette" to="#inicio" class="wordmark"
     row tag=nav ref=links class="topbar-links" align=center aria-label=T.navLabel {
       for item in T.nav key item.to {
         link item.label to=item.to class=(item.to == current ? "on" : "") aria-current=(item.to == current ? "location" : null)

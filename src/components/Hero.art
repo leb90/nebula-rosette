@@ -53,9 +53,8 @@ component Hero {
   column tag=section id="inicio" class="hero" {
     LanguageSwitch
     column class="hero-main" {
-      title tag=h1 class="hero-name" aria-label="Rosette Nebula" {
-        text "Rosette" class="mask"
-        text "Nebula" class="mask mask-2"
+      title tag=h1 class="hero-name" {
+        image "/img/logo-stacked.webp" alt="Nebula Rosette" class="hero-logo mask" width=1120 height=345 fetchpriority="high"
       }
       column class="pixel-bar" aria-hidden="true"
       text T.hero.sub tag=p class="hero-sub"

@@ -3,15 +3,15 @@
 test "the first screen says what this is and opens as the menu" {
   open "/"
   click "ES"
-  see "Rosette"
-  see "Patreon abre pronto"
+  see "Nebula Rosette"
+  see "Apoyar en Patreon"
   see "La historia"
   see "Quedan pocas naves"
 }
 
 test "the page opens in English" {
   open "/"
-  see "Patreon opens soon"
+  see "Back it on Patreon"
 }
 
 test "changing the language changes the page" {
@@ -35,12 +35,12 @@ test "the terraforming stages change the world" {
   see "Cometas de hielo llenan de mares las partes bajas."
 }
 
-test "while the Patreon is closed the page says it opens soon" {
+test "the support band asks for backing on Patreon in both languages" {
   open "/"
   click "ES"
-  see "El Patreon de Rosette Nebula abre pronto."
+  see "Apoyá Nebula Rosette en Patreon."
   click "EN"
-  see "The Rosette Nebula Patreon opens soon."
+  see "Back Nebula Rosette on Patreon."
 }
 
 test "the end of the page says it is made with ArtScript" {

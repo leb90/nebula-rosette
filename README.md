@@ -1,16 +1,10 @@
-# Rosette Nebula: la página
+# Nebula Rosette: la página
 
-La página de [Rosette Nebula](https://nebularosette.com), un RPG espacial de ciencia ficción dura, para un jugador y en pixel art. Está hecha en [ArtScript](https://artscript.dev).
+La página de [Nebula Rosette](https://nebularosette.com), un RPG espacial de ciencia ficción dura, para un jugador y en pixel art. Está hecha en [ArtScript](https://artscript.dev).
 
-## Abrir el Patreon
+## Patreon
 
-Cuando la campaña exista, pegá su dirección en `src/config.art`:
-
-```
-const PATREON_URL = "https://www.patreon.com/..."
-```
-
-Con eso, todos los botones que dicen que abre pronto pasan a apoyar y llevan a Patreon.
+La dirección de la campaña está en `src/config.art` (`PATREON_URL`). Todos los botones de apoyo llevan ahí. Si se deja vacía, la página dice que el Patreon abre pronto y los botones dejan de ser links.
 
 ## Comandos
 
@@ -38,12 +32,13 @@ Cada push a `main` revisa, prueba y publica la página en GitHub Pages (`.github
 
 Se generan con código y quedan en `public/`:
 
-- `node tools/bake.mjs`: el fondo fijo, las etapas del mundo, la luna y los íconos, con el mismo shader que corre en vivo. Necesita Chrome.
+- `node tools/bake.mjs`: el fondo fijo, las etapas del mundo y la luna, con el mismo shader que corre en vivo. Necesita Chrome.
+- `python3 tools/logo_assets.py <juego>/game/assets`: el logo, los íconos y la fuente de los títulos (Michroma, solo latín), a partir de los archivos del juego. Necesita Pillow, numpy, fonttools y brotli.
 - `python3 tools/draw_ship.py public/img/ship.png`: el plano de la nave. Necesita Pillow.
 - `python3 tools/dither_nebula.py <foto> public/img/nebula.png 480 --gamma 0.85`: la foto de la nebulosa con la paleta del juego. Necesita Pillow y numpy.
 - `tools/og.html`: la imagen para compartir en redes (`public/og.png`), capturada a 1200×630.
 
 ## Créditos
 
-- Pixelify Sans (The Pixelify Sans Project Authors) y Rajdhani (Indian Type Foundry), con licencia SIL OFL 1.1; las licencias están en `public/fonts/`.
+- Michroma (The Michroma Project Authors), Pixelify Sans (The Pixelify Sans Project Authors) y Rajdhani (Indian Type Foundry), con licencia SIL OFL 1.1; las licencias están en `public/fonts/`.
 - Foto de la Nebulosa Roseta: [Dylan O'Donnell](https://commons.wikimedia.org/wiki/File:The_Rosette_Nebula_Caldwell_49_50_Broadband.jpg), CC0.
