@@ -203,9 +203,8 @@ button.menu-item.on, button.menu-item.on:hover { color: #fff; border-color: var(
 .tone-sand { background: var(--sand); color: var(--ink); }
 .tone-ember { background: var(--ember); color: var(--paper); }
 
-.ship { display: block; width: 450px; max-width: 100%; height: auto; }
-@media (min-width: 1000px) { .ship { width: 600px; } }
-@media (min-width: 1280px) { .ship { width: 750px; } }
+/* The game's ship, drawn at 378 art pixels: shown at one or two screen pixels each, so it stays sharp. */
+.ship { display: block; width: 756px; max-width: 100%; height: auto; }
 
 .decision { width: min(560px, 100%); margin-left: auto; gap: 14px; }
 .decision-prompt { font-size: var(--t-lead); line-height: 1.25; }
@@ -406,7 +405,7 @@ a.band:hover, a.band:focus-visible { background: var(--ink); color: var(--amber)
   .field-visual, .field-flip .field-visual { grid-column: 1; grid-row: 1; }
   .field-body, .field-flip .field-body { grid-column: 1; grid-row: 2; max-width: none; }
   .field-title, .field-flip .field-title { grid-column: 1; grid-row: 3; text-align: left; }
-  .ship { width: 300px; }
+  .ship { width: 378px; }
   .decision, .bonds, .specialties { width: 100%; margin-left: 0; }
   .decision-outcome { min-height: 5em; }
   .bond { grid-template-columns: 6.2em 1fr; gap: 10px; }

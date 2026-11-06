@@ -47,7 +47,7 @@ const COPY = {
     navLabel: "Secciones",
     skip: "Saltar al contenido",
     navSupport: "Patreon",
-    shipAlt: "Plano de una nave vista desde arriba: una grilla de módulos de colores, con algunos lugares todavía vacíos",
+    shipAlt: "La nave de costado: un casco largo y gris con dos góndolas a los lados, radiadores, el puente arriba y tres toberas",
     decision: {
       prompt: "Una emboscada al salir de un salto. ¿Qué hacés?",
       note: "Ejemplo escrito para esta página. Las batallas entre naves todavía no están en el juego.",
@@ -231,7 +231,7 @@ const COPY = {
     navLabel: "Sections",
     skip: "Skip to content",
     navSupport: "Patreon",
-    shipAlt: "Plan of a ship seen from above: a grid of coloured modules, with some slots still empty",
+    shipAlt: "The ship from the side: a long grey hull with two nacelles along it, radiators, the bridge on top and three engines",
     decision: {
       prompt: "An ambush as you come out of a jump. What do you do?",
       note: "An example written for this page. Ship battles aren't in the game yet.",

@@ -32,9 +32,9 @@ Cada push a `main` revisa, prueba y publica la página en GitHub Pages (`.github
 
 Se generan con código y quedan en `public/`:
 
+- `public/img/ship.png`: la nave del juego, dibujada por el código de arte del juego, en vuelo y a una escala chica (378 px de largo).
 - `node tools/bake.mjs`: el fondo fijo, las etapas del mundo y la luna, con el mismo shader que corre en vivo. Necesita Chrome.
 - `python3 tools/logo_assets.py <juego>/game/assets`: el logo, los íconos y la fuente de los títulos (Michroma, solo latín), a partir de los archivos del juego. Necesita Pillow, numpy, fonttools y brotli.
-- `python3 tools/draw_ship.py public/img/ship.png`: el plano de la nave. Necesita Pillow.
 - `python3 tools/dither_nebula.py <foto> public/img/nebula.png 480 --gamma 0.85`: la foto de la nebulosa con la paleta del juego. Necesita Pillow y numpy.
 - `tools/og.html`: la imagen para compartir en redes (`public/og.png`), capturada a 1200×630.
 
