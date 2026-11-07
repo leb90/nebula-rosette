@@ -1,7 +1,7 @@
 // What people change lives here: the Patreon address, the version and every text of the page in both languages.
 
 // The campaign's address. Left empty, the page says the Patreon opens soon and its buttons are not links.
-const PATREON_URL = "https://www.patreon.com/c/rosettenebula"
+const PATREON_URL = "https://www.patreon.com/rosettenebula"
 const ARTSCRIPT_URL = "https://artscript.dev"
 const VERSION = "0.1.0"
 const AUTHOR = "Leandro Bisceglie"
